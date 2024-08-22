@@ -1,0 +1,9 @@
+model Labs {
+    @@map("labs")
+    id_labs  String  @id @map("id_labs") @db.VarChar(10)
+    name     String  @db.VarChar(100)
+    location String? @db.VarChar(100)
+
+    @@index([name], name: "labs_name_idx")
+    LabReservations LabReservations[]
+}

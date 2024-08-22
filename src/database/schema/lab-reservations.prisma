@@ -1,0 +1,29 @@
+model LabReservations {
+    @@map("lab_reservations")
+    id_reservation      String   @id @map("id_reservation") @db.VarChar(30)
+    lab_id              String   @db.VarChar(10)
+    lab_tools_name      Json
+    nim                 String   @db.VarChar(10)
+    reason              String   @db.Text
+    status              Status
+    approval_letter_url String?  @db.Text
+    start_date          DateTime @db.Date
+    end_date            DateTime @db.Date
+    start_time          DateTime @db.Time
+    end_time            DateTime @db.Time
+
+    Lab     Labs     @relation(fields: [lab_id], references: [id_labs])
+    Student Students @relation(fields: [nim], references: [nim])
+
+    @@index([nim], name: "lab_reservations_nim_idx")
+    @@index([status], name: "lab_reservations_status_idx")
+    @@index([start_date], name: "lab_reservations_start_date_idx")
+    @@index([end_date], name: "lab_reservations_end_date_idx")
+    @@index([lab_id], name: "fk_lab_reservations_lab_id")
+}
+
+enum Status {
+    PENDING
+    APPROVED
+    REJECTED
+}

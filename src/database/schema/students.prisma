@@ -1,0 +1,15 @@
+model Students {
+  user_email    String  @id @map("user_email") @db.VarChar(100)
+  nim           String  @db.VarChar(15) @unique
+  study_program String? @db.VarChar(100)
+  batch         Int?
+  phone_number  String? @db.VarChar(15)
+
+  StudyProgram StudyPrograms? @relation(fields: [study_program], references: [name])
+
+  @@unique([user_email], name: "email")
+  @@index([user_email], name: "student_email_idx")
+  @@index([study_program], name: "fk_students_study_program")
+  @@index([nim], name: "nim")
+  LabReservations LabReservations[]
+}

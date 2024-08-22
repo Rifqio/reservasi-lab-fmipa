@@ -1,0 +1,8 @@
+model StudyPrograms {
+    @@map("study_programs")
+    id_study_program Int    @id @map("id_study_program") @db.Int
+    name             String @db.VarChar(100) @unique
+
+    @@index([name], name: "study_programs_name_idx")
+    Students Students[]
+}

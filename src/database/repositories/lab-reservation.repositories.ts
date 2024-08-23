@@ -25,6 +25,7 @@ export class LabReservationRepositories {
         });
     }
 
+    // prettier-ignore
     public async findReservationByLabIdAndDate(labId: string, startDate: Date, endDate: Date) {
         return await this.db.labReservations.findMany({
             where: {
@@ -53,5 +54,27 @@ export class LabReservationRepositories {
                 ],
             },
         });
+    }
+
+    public async getCurrentReservationByNim(nim: string) {
+        return await this.db.labReservations.findMany({
+            where: {
+                nim: nim,
+            },
+            select: {
+                id_reservation: true,
+                research_title: true,
+                letter_number: true,
+                status: true,
+                source_of_funding: true,
+                reservation_purpose: true,
+                start_date: true,
+                end_date: true,
+            },
+        });
+    }
+
+    public async findAll() {
+        return await this.db.labReservations.findMany();
     }
 }

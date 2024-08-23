@@ -5,15 +5,17 @@ import { DatabaseService } from 'src/database/database.service.';
 import { RegisterRequestDTO } from 'src/services/auth/dto/request';
 import { PrismaPromise } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import { UserRole } from 'src/services/auth/dto/user-role.enum';
 
 @Injectable()
 export class AuthRepositories {
     constructor(private readonly db: DatabaseService) {}
 
-    public async createUserStudent(payload: RegisterRequestDTO): Promise<string> {
+    public async createUserStudent(payload: RegisterRequestDTO, role: UserRole.STUDENT): Promise<string> {
         const mockStudent = MockHelper.mockStudentProfile();
         return this.createUser(
             payload,
+            role,
             this.db.students.create({
                 data: {
                     user_email: payload.email,
@@ -25,10 +27,11 @@ export class AuthRepositories {
         );
     }
 
-    public async createUserLecturer(payload: RegisterRequestDTO): Promise<string> {
+    public async createUserLecturer(payload: RegisterRequestDTO, role: UserRole.LECTURER): Promise<string> {
         const mockLecturer = MockHelper.mockLecturerProfile();
         return this.createUser(
             payload,
+            role,
             this.db.lecturers.create({
                 data: {
                     user_email: payload.email,
@@ -38,15 +41,15 @@ export class AuthRepositories {
         );
     }
 
-    private async createUser(payload: RegisterRequestDTO, additionalDataCreation: PrismaPromise<any>): Promise<string> {
+    private async createUser(payload: RegisterRequestDTO, role: UserRole, additionalDataCreation: PrismaPromise<any>): Promise<string> {
         const userCreation = this.db.users.create({
             data: {
                 id_user: faker.string.uuid(),
                 email: payload.email,
                 full_name: payload.full_name,
-                is_email_verified: false,
+                is_email_verified: true, // For the sake of testing, we assume that the email is always verified
                 password: payload.password,
-                role: payload.role,
+                role: role,
                 created_at: new Date(),
                 updated_at: new Date(),
             },

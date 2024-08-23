@@ -17,4 +17,8 @@ export class Utils {
     public static generateUUID(): string {
         return faker.string.uuid();
     }
+
+    public static isEmailStudent(email: string): boolean {
+        return email.endsWith('@student.uns.ac.id');
+    }
 }

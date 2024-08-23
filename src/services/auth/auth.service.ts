@@ -9,6 +9,7 @@ import { StudentRepositories } from 'src/database/repositories/student.repositor
 import { Users } from '@prisma/client';
 import { TokenPayload } from './dto/token-payload';
 import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
+import { Utils } from 'src/commons/utils';
 
 @Injectable()
 export class AuthService {
@@ -25,12 +26,13 @@ export class AuthService {
 
         let userId: string;
         payload.password = await this.hashPassword(payload.password);
-        if (payload.role === UserRole.STUDENT) {
-            userId = await this.authRepository.createUserStudent(payload);
-        } else {
-            userId = await this.authRepository.createUserLecturer(payload);
-        }
 
+        if (Utils.isEmailStudent(payload.email)) {
+            userId = await this.authRepository.createUserStudent(payload, UserRole.STUDENT);
+        } else {
+            userId = await this.authRepository.createUserLecturer(payload, UserRole.LECTURER);
+        }
+        
         return userId;
     }
 

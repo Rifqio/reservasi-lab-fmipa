@@ -1,4 +1,4 @@
-import { ApiResponse } from './ApiResponse';
+import { ApiResponse } from './api.response';
 
 export class ErrorResponse<T> extends ApiResponse {
     private errors: T;

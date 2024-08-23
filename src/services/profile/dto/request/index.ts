@@ -1,0 +1,1 @@
+export { UpdateLecturerProfileRequest, UpdateStudentProfileRequest } from './update-profile.request';

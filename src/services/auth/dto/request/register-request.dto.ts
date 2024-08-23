@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, Length } from 'class-validator';
 import { UserRole } from '../user-role.enum';
 
 export class RegisterRequestDTO {
@@ -14,5 +14,6 @@ export class RegisterRequestDTO {
     full_name: string;
 
     @IsNotEmpty()
+    @IsEnum(UserRole, { message: 'Invalid role' })
     role: UserRole;
 }

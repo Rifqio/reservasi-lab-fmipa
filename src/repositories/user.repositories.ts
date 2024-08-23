@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { randomUUID } from 'crypto';
-import { DatabaseService } from 'src/database/DatabaseService';
+import { DatabaseService } from 'src/database/database.service.';
 import { RegisterRequestDTO } from 'src/services/auth/dto/request';
 
 @Injectable()

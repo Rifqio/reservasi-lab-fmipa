@@ -11,6 +11,8 @@ model Users {
 
     @@index([email], name: "users_email_idx")
     @@index([role], name: "users_role_idx")
+    Students Students[]
+    Lecturers Lecturers[]
 }
 
 enum Role {

@@ -1,7 +1,9 @@
 model Lecturers {
-    @@map("lecturers")
     user_email String @id @map("user_email") @db.VarChar(100)
     nip        String @db.VarChar(30)
 
+    User Users @relation(fields: [user_email], references: [email])
+
     @@unique([user_email], name: "email")
+    @@map("lecturers")
 }

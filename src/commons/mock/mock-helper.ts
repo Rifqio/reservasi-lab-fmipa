@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { faker } from '@faker-js/faker';
 import { StudentProfile } from '../@types/mock/StudentProfile';
 

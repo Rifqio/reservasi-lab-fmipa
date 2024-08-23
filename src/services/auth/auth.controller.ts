@@ -1,21 +1,24 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterRequestDTO } from './dto/request';
-import { SuccessResponse } from 'src/commons/response/SuccessResponse';
-import { ApiResponse } from 'src/commons/response/ApiResponse';
+import { LoginRequestDTO, RegisterRequestDTO } from './dto/request';
+import { SuccessResponse } from 'src/server/response/success.response';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('api/v1/auth')
+@Public()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('register')
-    async register(@Body() payload: RegisterRequestDTO): Promise<ApiResponse> {
-        await this.authService.register(payload);
-        return SuccessResponse.success('User has been registered');
+    public async register(@Body() payload: RegisterRequestDTO): Promise<SuccessResponse<{ user_id: string }>> {
+        const userId = await this.authService.register(payload);
+        return SuccessResponse.successWithData('User has been registered', { user_id: userId });
     }
 
+    @HttpCode(HttpStatus.OK)
     @Post('login')
-    login() {
-        return 'this.authService.findAll()';
+    public async login(@Body() payload: LoginRequestDTO): Promise<SuccessResponse<{ token: string }>> {
+        const token = await this.authService.login(payload);
+        return SuccessResponse.successWithData('User has been logged in', { token });
     }
 }

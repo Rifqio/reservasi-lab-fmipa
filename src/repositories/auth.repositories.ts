@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { MockHelper } from 'src/commons/mock/MockHelper';
+import { MockHelper } from 'src/commons/mock/mock-helper';
 import { Utils } from 'src/commons/utils';
-import { DatabaseService } from 'src/database/DatabaseService';
+import { DatabaseService } from 'src/database/database.service.';
 import { RegisterRequestDTO } from 'src/services/auth/dto/request';
 import { PrismaPromise } from '@prisma/client';
 import { faker } from '@faker-js/faker';

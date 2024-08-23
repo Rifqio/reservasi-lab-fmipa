@@ -5,23 +5,23 @@ export class AuthException extends HttpException {
         super(message, statusCode);
     }
 
-    public static userAlreadyExists() {
+    public static userAlreadyExists(): AuthException {
         return new AuthException('User already exists', HttpStatus.UNAUTHORIZED);
     }
 
-    public static unauthorized() {
+    public static unauthorized(): AuthException {
         return new AuthException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    public static userNotFound() {
+    public static userNotFound(): AuthException {
         return new AuthException('Invalid email or password', HttpStatus.NOT_FOUND);
     }
 
-    public static invalidPassword() {
+    public static invalidPassword(): AuthException {
         return new AuthException('Invalid email or password', HttpStatus.UNAUTHORIZED);
     }
 
-    public static emailNotVerified() {
+    public static emailNotVerified(): AuthException {
         return new AuthException('Please verify your email!', HttpStatus.UNAUTHORIZED);
     }
 }

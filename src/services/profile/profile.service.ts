@@ -1,6 +1,6 @@
 import { Injectable, Request } from '@nestjs/common';
-import { LecturerRepositories } from 'src/repositories/lecturer.repositories';
-import { StudentRepositories } from 'src/repositories/student.repositories';
+import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
+import { StudentRepositories } from 'src/database/repositories/student.repositories';
 import { ApiRequest } from 'src/server/request/api.request';
 import { UpdateLecturerProfileRequest, UpdateStudentProfileRequest } from './dto/request';
 import { Lecturers, Students } from '@prisma/client';

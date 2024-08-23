@@ -11,6 +11,7 @@ import {
 import { Request, Response } from 'express';
 import { ApiErrorResponseType } from 'src/commons/@types/error/api-error.types';
 import { AuthException } from 'src/server/exception/auth.exception';
+import { BusinessException } from 'src/server/exception/business.exception';
 import { ErrorResponse } from 'src/server/response/error.response';
 
 @Catch(AuthException)
@@ -25,6 +26,21 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
         this.logger.error(`[${request.method}] ${request.url}`, exception);
         response.status(exception.getStatus()).json(jsonResponse);
+    }
+}
+
+@Catch(BusinessException)
+export class BusinessExceptionFilter implements ExceptionFilter {
+    private readonly logger = new Logger(BusinessExceptionFilter.name);
+    catch(exception: BusinessException, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
+
+        const jsonResponse = new ErrorResponse(exception.message, null);
+
+        this.logger.error(`[${request.method}] ${request.url}`, exception);
+        response.status(HttpStatus.BAD_REQUEST).json(jsonResponse);
     }
 }
 

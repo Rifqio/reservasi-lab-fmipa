@@ -4,7 +4,7 @@ import { ApiRequest } from 'src/server/request/api.request';
 import { UpdateLecturerProfileRequest, UpdateStudentProfileRequest } from './dto/request';
 import { Lecturers, Students } from '@prisma/client';
 import { SuccessResponse } from 'src/server/response/success.response';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from 'src/commons/decorators/roles.decorator';
 import { UserRole } from '../auth/dto/user-role.enum';
 import { RoleGuard } from 'src/server/guard/role.guard';
 import { StudentProfile } from './dto/response/student-profile.response';

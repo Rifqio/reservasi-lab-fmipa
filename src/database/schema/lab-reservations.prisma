@@ -1,16 +1,16 @@
 model LabReservations {
-    @@map("lab_reservations")
-    id_reservation      String   @id @map("id_reservation") @db.VarChar(30)
-    lab_id              String   @db.VarChar(10)
+    id_reservation      String             @id @map("id_reservation") @db.VarChar(30)
+    letter_number       String             @db.VarChar(30)
+    lab_id              String             @db.VarChar(10)
     lab_tools_name      Json
-    nim                 String   @db.VarChar(10)
-    reason              String   @db.Text
-    status              Status
-    approval_letter_url String?  @db.Text
-    start_date          DateTime @db.Date
-    end_date            DateTime @db.Date
-    start_time          DateTime @db.Time
-    end_time            DateTime @db.Time
+    research_title      String             @db.Text
+    source_of_funding   SourceOfFunding    @default(LAINNYA)
+    reservation_purpose ReservationPurpose
+    nim                 String             @db.VarChar(10)
+    status              Status             @default(PENDING)
+    approval_letter_url String?            @db.Text
+    start_date          DateTime           @db.Date
+    end_date            DateTime           @db.Date
 
     Lab     Labs     @relation(fields: [lab_id], references: [id_labs])
     Student Students @relation(fields: [nim], references: [nim])
@@ -20,10 +20,24 @@ model LabReservations {
     @@index([start_date], name: "lab_reservations_start_date_idx")
     @@index([end_date], name: "lab_reservations_end_date_idx")
     @@index([lab_id], name: "fk_lab_reservations_lab_id")
+    @@map("lab_reservations")
 }
 
 enum Status {
     PENDING
     APPROVED
     REJECTED
+}
+
+enum ReservationPurpose {
+    PRAKTIKUM
+    PENELITIAN
+    TUGAS_AKHIR
+    LAINNYA
+}
+
+enum SourceOfFunding {
+    BEASISWA
+    HIBAH
+    LAINNYA
 }

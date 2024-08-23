@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpStatus, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginRequestDTO, RegisterRequestDTO } from './dto/request';
 import { SuccessResponse } from 'src/server/response/success.response';
-import { Public } from 'src/decorators/public.decorator';
+import { Public } from 'src/commons/decorators/public.decorator';
 import { ApiResponse } from '@nestjs/swagger';
 import { LoginResponse, RegisterResponse } from './dto/response';
 import { createLoginApiResponseSchema, createRegisterApiResponseSchema } from 'src/commons/swagger/auth/auth.schema';

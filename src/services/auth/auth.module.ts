@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { Config } from 'src/config/config';
-import { RepositoriesModule } from 'src/repositories/repositories.module';
+import { RepositoriesModule } from 'src/database/repositories/repositories.module';
 
 @Module({
     imports: [

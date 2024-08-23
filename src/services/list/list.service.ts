@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ListRequestType } from './dto/request';
-import { StudyProgramRepositories } from 'src/repositories/study-program.repositories';
-import { LabsRepositories } from 'src/repositories/labs.repositories';
+import { StudyProgramRepositories } from 'src/database/repositories/study-program.repositories';
+import { LabsRepositories } from 'src/database/repositories/labs.repositories';
 import { ListResponse } from './dto/response';
 
 @Injectable()

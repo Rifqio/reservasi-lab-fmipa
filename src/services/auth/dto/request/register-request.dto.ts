@@ -1,7 +1,7 @@
 import { IsEmail, IsEnum, IsNotEmpty, Length } from 'class-validator';
 import { UserRole } from '../user-role.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotAdmin } from 'src/commons/decorators/is-not-admin.decorator';
+import { IsNotAdmin, IsPasswordMatch } from 'src/commons/decorators';
 
 export class RegisterRequestDTO {
     @IsEmail()
@@ -9,11 +9,16 @@ export class RegisterRequestDTO {
     email: string;
 
     @IsNotEmpty()
+    full_name: string;
+
+    @IsNotEmpty()
     @Length(8, 100)
     password: string;
 
     @IsNotEmpty()
-    full_name: string;
+    @Length(8, 100)
+    @IsPasswordMatch('password', { message: 'Password and confirm password do not match' })
+    confirm_password: string;
 
     @IsNotEmpty()
     @IsNotAdmin({ message: 'Invalid role' })

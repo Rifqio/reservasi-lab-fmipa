@@ -30,14 +30,14 @@ enum Status {
 }
 
 enum ReservationPurpose {
-    PRAKTIKUM
-    PENELITIAN
+    MBKM
+    PKM
     TUGAS_AKHIR
     LAINNYA
 }
 
 enum SourceOfFunding {
-    BEASISWA
+    MANDIRI
     HIBAH
     LAINNYA
 }

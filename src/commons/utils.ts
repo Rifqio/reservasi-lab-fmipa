@@ -2,6 +2,8 @@ import { faker } from '@faker-js/faker';
 import moment from 'moment';
 
 export class Utils {
+    constructor() {}
+    
     public static generateRandomString(length: number): string {
         return faker.string.alphanumeric(length);
     }

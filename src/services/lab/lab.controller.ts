@@ -4,9 +4,10 @@ import { LabReservationRequest } from './dto/request';
 import { RoleGuard } from 'src/server/guard/role.guard';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { UserRole } from '../auth/dto/user-role.enum';
-import { ApiRequest } from 'src/server/request/api.request';
-import { SuccessResponse } from 'src/server/response/success.response';
-import { CurrentLabReservationResponse, LabReservationResponse } from './dto/response';
+import { ApiRequest } from 'src/server/request';
+import { SuccessResponse } from 'src/server/response';
+import { CurrentLabReservationResponse, LabReservationResponse, RequestClearanceResponse } from './dto/response';
+import { LabClearanceRequest } from './dto/request/lab-clearance.request';
 
 @Controller('api/v1/lab')
 @UseGuards(RoleGuard)
@@ -26,5 +27,13 @@ export class LabController {
     public async getCurrentReservation(@Request() req: ApiRequest) : Promise<SuccessResponse<Array<CurrentLabReservationResponse>>> {
         const reservation = await this.labService.getCurrentReservation(req);
         return SuccessResponse.successWithData('Current reservation fetched', reservation);
+    }
+
+    @Post('clearance')
+    @Roles(UserRole.STUDENT)
+    public async requestClearance(@Request() req: ApiRequest, @Body() payload: LabClearanceRequest) : Promise<SuccessResponse<RequestClearanceResponse>> {
+        const clearance = await this.labService.requestClearance(payload, req.user.nim);
+        const response = new RequestClearanceResponse(clearance);
+        return SuccessResponse.successWithData('Clearance request success', response);
     }
 }

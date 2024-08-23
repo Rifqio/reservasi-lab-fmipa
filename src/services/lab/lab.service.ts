@@ -5,10 +5,15 @@ import { BusinessException } from 'src/server/exception/business.exception';
 import { ApiRequest } from 'src/server/request/api.request';
 import { UserRole } from '../auth/dto/user-role.enum';
 import { CurrentLabReservationResponse } from './dto/response';
+import { LabClearanceRequest } from './dto/request/lab-clearance.request';
+import { LabClearanceRepositories } from 'src/database/repositories/lab-clearance.repositories';
 
 @Injectable()
 export class LabService {
-    constructor(private labReservationRepository: LabReservationRepositories) {}
+    constructor(
+        private labReservationRepository: LabReservationRepositories,
+        private labClearanceRepository: LabClearanceRepositories,
+    ) {}
     private logger = new Logger(LabService.name);
 
     // prettier-ignore
@@ -18,6 +23,7 @@ export class LabService {
         return reservation.id_reservation;
     }
 
+    // prettier-ignore
     public async getCurrentReservation(req: ApiRequest) : Promise<Array<CurrentLabReservationResponse>> {
         let reservations: Array<CurrentLabReservationResponse>;
         if (req.user.role === UserRole.STUDENT) {
@@ -26,6 +32,12 @@ export class LabService {
             reservations = await this.getAllReservations();
         }
         return reservations;
+    }
+
+    // prettier-ignore
+    public async requestClearance(payload: LabClearanceRequest, nim: string) : Promise<string> {
+        const clearance = await this.labClearanceRepository.requestClearance(payload, nim);
+        return clearance.letter_number;
     }
 
     // prettier-ignore

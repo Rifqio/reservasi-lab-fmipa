@@ -1,0 +1,19 @@
+model LabClearance {
+    id_clearance  String              @id @map("id_clearance") @db.VarChar(30)
+    nim           String              @db.VarChar(10)
+    letter_number String              @db.VarChar(30)
+    purpose       LabClearancePurpose
+    status        String              @default("Belum Aktif") @db.VarChar(50)
+    created_at    DateTime            @default(now()) @db.Timestamp(6)
+    updated_at    DateTime            @default(now()) @db.Timestamp(6)
+
+    Student Students @relation(fields: [nim], references: [nim])
+    @@index([nim], name: "lab_clearance_nim_idx")
+    @@index([status], name: "lab_clearance_status_idx")
+    @@map("lab_clearance")
+}
+
+enum LabClearancePurpose {
+    YUDISIUM
+    LAINNYA
+}

@@ -13,4 +13,5 @@ model Students {
   @@index([user_email], name: "student_email_idx")
   @@index([study_program], name: "fk_students_study_program")
   @@index([nim], name: "nim")
+  LabClearance LabClearance[]
 }

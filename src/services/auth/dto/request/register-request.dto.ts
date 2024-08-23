@@ -1,5 +1,6 @@
 import { IsEmail, IsEnum, IsNotEmpty, Length } from 'class-validator';
 import { UserRole } from '../user-role.enum';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterRequestDTO {
     @IsEmail()
@@ -15,5 +16,6 @@ export class RegisterRequestDTO {
 
     @IsNotEmpty()
     @IsEnum(UserRole, { message: 'Invalid role' })
+    @ApiProperty({ enum: UserRole })
     role: UserRole;
 }

@@ -12,7 +12,7 @@ export class LecturerRepositories {
             where: {
                 user_email: email,
             },
-    });
+        });
     }
 
     // prettier-ignore

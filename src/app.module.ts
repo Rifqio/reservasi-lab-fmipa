@@ -5,9 +5,10 @@ import { AuthModule } from './services/auth/auth.module';
 import { ProfileModule } from './services/profile/profile.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './server/guard/auth.guard';
+import { ListModule } from './services/list/list.module';
 
 @Module({
-    imports: [AuthModule, ProfileModule],
+    imports: [AuthModule, ProfileModule, ListModule],
     controllers: [AppController],
     providers: [
         AppService,

@@ -4,6 +4,7 @@ import { UserRepositories } from './user.repositories';
 import { LecturerRepositories } from './lecturer.repositories';
 import { AuthRepositories } from './auth.repositories';
 import { StudentRepositories } from './student.repositories';
+import { StudyProgramRepositories } from './study-program.repositories';
 
 @Module({
     exports: [
@@ -11,14 +12,16 @@ import { StudentRepositories } from './student.repositories';
         UserRepositories,
         LecturerRepositories,
         AuthRepositories,
-        StudentRepositories
+        StudentRepositories,
+        StudyProgramRepositories
     ],
     providers: [
         DatabaseService,
         UserRepositories,
         LecturerRepositories,
         AuthRepositories,
-        StudentRepositories
+        StudentRepositories,
+        StudyProgramRepositories
     ],
 })
 export class RepositoriesModule {}

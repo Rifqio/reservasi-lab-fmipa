@@ -22,6 +22,6 @@ export class AuthException extends HttpException {
     }
 
     public static emailNotVerified() {
-        return new AuthException('Please verify your email!.', HttpStatus.UNAUTHORIZED);
+        return new AuthException('Please verify your email!', HttpStatus.UNAUTHORIZED);
     }
 }

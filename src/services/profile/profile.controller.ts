@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Patch, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Request, UseGuards } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { ApiRequest } from 'src/server/request/api.request';
 import { UpdateLecturerProfileRequest, UpdateStudentProfileRequest } from './dto/request';
@@ -7,17 +7,18 @@ import { SuccessResponse } from 'src/server/response/success.response';
 import { Roles } from 'src/decorators/roles.decorator';
 import { UserRole } from '../auth/dto/user-role.enum';
 import { RoleGuard } from 'src/server/guard/role.guard';
+import { StudentProfile } from './dto/response/student-profile.response';
+import { LecturerProfile } from './dto/response/lecturer-profile.response';
 
 
 @Controller('api/v1/profile')
 @UseGuards(RoleGuard)
 export class ProfileController {
-    private logger = new Logger(ProfileController.name);
     constructor(private readonly profileService: ProfileService) {}
 
-
+    // prettier-ignore
     @Get()
-    public async getProfile(@Request() request: ApiRequest) {
+    public async getProfile(@Request() request: ApiRequest) : Promise<SuccessResponse<StudentProfile | LecturerProfile>> {
         const profile = await this.profileService.getProfile(request);
         return SuccessResponse.successWithData('Profile has been fetched', profile);
     }

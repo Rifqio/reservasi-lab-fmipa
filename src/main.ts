@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import {
     AuthExceptionFilter,
     BadRequestExceptionFilter,
+    ForbiddenExceptionFilter,
     GlobalExceptionFilter,
 } from './filter/global-exception.filter';
 
@@ -16,6 +17,7 @@ async function bootstrap() {
         new GlobalExceptionFilter(),
         new AuthExceptionFilter(),
         new BadRequestExceptionFilter(),
+        new ForbiddenExceptionFilter()
     );
     await app.listen(3000);
 }

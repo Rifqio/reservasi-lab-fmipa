@@ -23,37 +23,20 @@ export class ProfileService {
 
     // prettier-ignore
     public async updateProfileStudent(@Request() request: ApiRequest, payload: UpdateStudentProfileRequest) : Promise<Students> {
-        const student = await this.studentRepository.updateProfileByEmail(payload, request.user.email);
-        return student;
+        return await this.studentRepository.updateProfileByEmail(payload, request.user.email);
     }
 
     // prettier-ignore
     public async updateProfileLecturer(@Request() request: ApiRequest, payload: UpdateLecturerProfileRequest) : Promise<Lecturers> {
-        const lecturer = await this.lecturerRepository.updateNipByEmail(payload.nip, request.user.email);
-        return lecturer;
+        return await this.lecturerRepository.updateNipByEmail(payload.nip, request.user.email);
     }
 
     // prettier-ignore
     private async getProfileStudent(email: string) : Promise<StudentProfile> {
-        const student = await this.studentRepository.findStudentByEmailWithDetails(email);
-        const profile = new StudentProfile({
-            batch: student.batch,
-            full_name: student.User.full_name,
-            nim: student.nim,
-            phone_number: student.phone_number,
-            study_program: student.study_program,
-            user_email: student.user_email,
-        });
-        return profile;
+        return await this.studentRepository.findStudentByEmailWithDetails(email);
     }
 
     private async getProfileLecturer(email: string) : Promise<LecturerProfile> {
-        const lecturer = await this.lecturerRepository.findLecturerByEmailWithDetails(email);
-        const profile = new LecturerProfile({
-            full_name: 'lecturer.User.full_name',
-            nip: lecturer.nip,
-            user_email: lecturer.user_email,
-        });
-        return profile;
+        return await this.lecturerRepository.findLecturerByEmailWithDetails(email);
     }
 }

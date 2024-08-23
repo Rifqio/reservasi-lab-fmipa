@@ -3,6 +3,7 @@ import { Students } from '@prisma/client';
 import { MockHelper } from 'src/commons/mock/mock-helper';
 import { DatabaseService } from 'src/database/database.service.';
 import { UpdateStudentProfileRequest } from 'src/services/profile/dto/request';
+import { StudentProfile } from 'src/services/profile/dto/response/student-profile.response';
 
 @Injectable()
 export class StudentRepositories {
@@ -20,8 +21,8 @@ export class StudentRepositories {
         });
     }
 
-    public findStudentByEmailWithDetails(email: string) {
-        return this.db.students.findFirst({
+    public async findStudentByEmailWithDetails(email: string) : Promise<StudentProfile> {
+        const student = await this.db.students.findFirst({
             where: {
                 user_email: email,
             },
@@ -38,6 +39,15 @@ export class StudentRepositories {
                 }
             }
         });
+
+        return new StudentProfile({
+            batch: student.batch,
+            full_name: student.User.full_name,
+            nim: student.nim,
+            phone_number: student.phone_number,
+            study_program: student.study_program,
+            user_email: student.user_email,
+        })
     }
 
     public async findStudentByEmail(email: string): Promise<Students> {

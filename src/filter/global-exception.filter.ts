@@ -3,6 +3,7 @@ import {
     BadRequestException,
     Catch,
     ExceptionFilter,
+    ForbiddenException,
     HttpException,
     HttpStatus,
     Logger,
@@ -44,6 +45,22 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
 
         this.logger.error(`[${request.method}] ${request.url}`, exception);
         response.status(HttpStatus.BAD_REQUEST).json(jsonResponse);
+    }
+}
+
+@Catch(ForbiddenException)
+export class ForbiddenExceptionFilter implements ExceptionFilter {
+    private readonly logger = new Logger(ForbiddenExceptionFilter.name);
+    catch(exception: ForbiddenException, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
+        const message = 'You do not have permission to access this resource';
+
+        const jsonResponse = new ErrorResponse(message, null);
+
+        this.logger.error(`[${request.method}] ${request.url}`, exception);
+        response.status(HttpStatus.FORBIDDEN).json(jsonResponse);
     }
 }
 

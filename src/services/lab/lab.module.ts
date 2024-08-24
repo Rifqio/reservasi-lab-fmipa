@@ -4,7 +4,8 @@ import { LabController } from './lab.controller';
 import { RepositoriesModule } from 'src/database/repositories/repositories.module';
 
 @Module({
+    imports: [RepositoriesModule],
     controllers: [LabController],
-    providers: [LabService, RepositoriesModule],
+    providers: [LabService],
 })
 export class LabModule {}

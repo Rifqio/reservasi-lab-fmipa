@@ -2,9 +2,11 @@ import { LabClearanceRequest } from 'src/services/lab/dto/request/lab-clearance.
 import { DatabaseService } from '../database.service.';
 import { Utils } from 'src/commons/utils';
 import { LabClearanceStatus } from 'src/services/lab/dto/lab-clearance-status.enum';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class LabClearanceRepositories {
-    constructor(private db: DatabaseService) {}
+    constructor(private readonly db: DatabaseService) {}
 
     public async requestClearance(data: LabClearanceRequest, nim: string) {
         return await this.db.labClearance.create({

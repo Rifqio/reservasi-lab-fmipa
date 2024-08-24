@@ -2,7 +2,9 @@ import { LabReservationRequest } from 'src/services/lab/dto/request';
 import { DatabaseService } from '../database.service.';
 import { Utils } from 'src/commons/utils';
 import { Status } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class LabReservationRepositories {
     constructor(private db: DatabaseService) {}
 

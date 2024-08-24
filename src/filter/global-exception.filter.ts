@@ -8,6 +8,7 @@ import {
     HttpStatus,
     Logger,
 } from '@nestjs/common';
+import { JsonWebTokenError } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { ApiErrorResponseType } from 'src/commons/@types/error/api-error.types';
 import { AuthException } from 'src/server/exception/auth.exception';
@@ -26,6 +27,21 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
         this.logger.error(`[${request.method}] ${request.url}`, exception);
         response.status(exception.getStatus()).json(jsonResponse);
+    }
+}
+
+@Catch(JsonWebTokenError)
+export class JsonWebTokenErrorFilter implements ExceptionFilter {
+    private readonly logger = new Logger(JsonWebTokenErrorFilter.name);
+    catch(exception: JsonWebTokenError, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
+
+        const jsonResponse = new ErrorResponse('Invalid token', null);
+
+        this.logger.error(`[${request.method}] ${request.url}`, exception);
+        response.status(HttpStatus.UNAUTHORIZED).json(jsonResponse);
     }
 }
 

@@ -1,9 +1,10 @@
 import { IsEmail, IsNotEmpty, Length } from 'class-validator';
-import { IsPasswordMatch } from 'src/commons/decorators';
+import { IsPasswordMatch, IsValidUNSEmail } from 'src/commons/decorators';
 
 export class RegisterRequestDTO {
     @IsEmail()
     @IsNotEmpty()
+    @IsValidUNSEmail()
     email: string;
 
     @IsNotEmpty()

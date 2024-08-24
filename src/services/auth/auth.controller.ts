@@ -10,14 +10,13 @@ import { LoginResponse, RegisterResponse } from './dto/response';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    // prettier-ignore
     @Post('register')
     public async register(@Body() payload: RegisterRequestDTO): Promise<SuccessResponse<RegisterResponse>> {
         const userId = await this.authService.register(payload);
-        return SuccessResponse.successWithData('User has been registered', { user_id: userId });
+        const response = new RegisterResponse(userId);
+        return SuccessResponse.successWithData('User has been registered', response);
     }
 
-    // prettier-ignore
     @HttpCode(HttpStatus.OK)
     @Post('login')
     public async login(@Body() payload: LoginRequestDTO): Promise<SuccessResponse<LoginResponse>> {

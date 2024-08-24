@@ -1,8 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { ApiResponse } from './api.response';
 
 export class SuccessResponse<T> extends ApiResponse {
-    @ApiProperty()
     data: T;
 
     constructor(message: string, data: T) {

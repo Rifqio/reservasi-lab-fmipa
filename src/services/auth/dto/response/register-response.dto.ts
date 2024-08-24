@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-
 export class RegisterResponse {
-    @ApiProperty()
+    constructor(userId: string) {
+        this.user_id = userId;
+    }
     user_id: string;
 }

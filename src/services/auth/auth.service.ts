@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO } from './dto';
+import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO, UserRole } from './dto';
 import { AuthException } from 'src/server/exception/auth.exception';
-import { UserRole } from './dto/user-role.enum';
 import { AuthRepositories } from 'src/database/repositories/auth.repositories';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { StudentRepositories } from 'src/database/repositories/student.repositories';
-import { Users } from '@prisma/client';
 import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
+import { Users } from '@prisma/client';
 import { Utils } from 'src/commons/utils';
 import { Config } from 'src/config/config';
 
@@ -32,11 +31,11 @@ export class AuthService {
         } else {
             userId = await this.authRepository.createUserLecturer(payload, UserRole.LECTURER);
         }
-        
+
         return userId;
     }
 
-    public async login(payload: LoginRequestDTO) : Promise<TokenDTO> {
+    public async login(payload: LoginRequestDTO): Promise<TokenDTO> {
         const user = await this.authRepository.findExistingUser(payload.email);
         if (!user) throw AuthException.userNotFound();
         if (user.is_email_verified === false) throw AuthException.emailNotVerified();
@@ -53,7 +52,7 @@ export class AuthService {
         }
     }
 
-    public async refreshToken(refreshToken: string) : Promise<TokenDTO> {
+    public async refreshToken(refreshToken: string): Promise<TokenDTO> {
         const payload = this.verifyRefreshToken(refreshToken);
         const user = await this.authRepository.findExistingUser(payload.email);
         if (!user) throw AuthException.userNotFound();
@@ -67,35 +66,37 @@ export class AuthService {
         }
     }
 
-    private verifyRefreshToken(refreshToken: string) : TokenPayload {
-        return this.jwtService.verify(refreshToken, {
+    private verifyRefreshToken(refreshToken: string): TokenPayload {
+        const verify = this.jwtService.verify(refreshToken, {
             secret: Config.JWT_REFRESH_SECRET,
             issuer: Config.JWT_ISSUER,
             audience: Config.JWT_AUDIENCE,
         });
+        if (!verify) throw AuthException.invalidToken();
+        return verify;
     }
 
-    public async findExistingUser (email: string) : Promise<Users> {
+    public async findExistingUser(email: string): Promise<Users> {
         return await this.authRepository.findExistingUser(email);
     }
 
-    private generateToken(user: Users, identity: string, role: UserRole) : TokenDTO {
+    private generateToken(user: Users, identity: string, role: UserRole): TokenDTO {
         const accessToken = this.generateAccessToken(user, identity, role);
         const refreshToken = this.generateRefreshToken(user);
-        return new TokenDTO(accessToken, refreshToken);   
+        return new TokenDTO(accessToken, refreshToken);
     }
 
-    private generateRefreshToken(user: Users) : string {
+    private generateRefreshToken(user: Users): string {
         const payload = this.generateRefreshTokenPayload(user);
         return this.jwtService.sign(payload, {
             expiresIn: Config.JWT_REFRESH_EXPIRES_IN,
             issuer: Config.JWT_ISSUER,
             audience: Config.JWT_AUDIENCE,
-            secret: Config.JWT_REFRESH_SECRET
+            secret: Config.JWT_REFRESH_SECRET,
         });
     }
 
-    private generateAccessToken(user: Users, identity: string, role: UserRole) : string {
+    private generateAccessToken(user: Users, identity: string, role: UserRole): string {
         const payload = this.generateAccessTokenPayload(user, identity, role);
         return this.jwtService.sign(payload, {
             expiresIn: Config.JWT_EXPIRES_IN,
@@ -105,7 +106,7 @@ export class AuthService {
         });
     }
 
-    private generateRefreshTokenPayload(user: Users) : TokenPayload {
+    private generateRefreshTokenPayload(user: Users): TokenPayload {
         return {
             sub: user.id_user,
             email: user.email,
@@ -113,7 +114,7 @@ export class AuthService {
         };
     }
 
-    private generateAccessTokenPayload(user: Users, identity: string, role: UserRole) : TokenPayload {
+    private generateAccessTokenPayload(user: Users, identity: string, role: UserRole): TokenPayload {
         return {
             sub: user.id_user,
             email: user.email,

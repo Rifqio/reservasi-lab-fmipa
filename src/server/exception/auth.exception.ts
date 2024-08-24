@@ -21,6 +21,10 @@ export class AuthException extends HttpException {
         return new AuthException('Invalid email or password', HttpStatus.UNAUTHORIZED);
     }
 
+    public static invalidToken(): AuthException {
+        return new AuthException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
+
     public static emailNotVerified(): AuthException {
         return new AuthException('Please verify your email!', HttpStatus.UNAUTHORIZED);
     }

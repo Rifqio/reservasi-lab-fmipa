@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LoginRequestDTO, RegisterRequestDTO } from './dto/request';
+import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO } from './dto';
 import { AuthException } from 'src/server/exception/auth.exception';
 import { UserRole } from './dto/user-role.enum';
 import { AuthRepositories } from 'src/database/repositories/auth.repositories';
@@ -7,9 +7,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { StudentRepositories } from 'src/database/repositories/student.repositories';
 import { Users } from '@prisma/client';
-import { TokenPayload } from './dto/token-payload';
 import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
 import { Utils } from 'src/commons/utils';
+import { Config } from 'src/config/config';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +36,7 @@ export class AuthService {
         return userId;
     }
 
-    public async login(payload: LoginRequestDTO) : Promise<string> {
+    public async login(payload: LoginRequestDTO) : Promise<TokenDTO> {
         const user = await this.authRepository.findExistingUser(payload.email);
         if (!user) throw AuthException.userNotFound();
         if (user.is_email_verified === false) throw AuthException.emailNotVerified();
@@ -46,27 +46,81 @@ export class AuthService {
 
         if (user.role === UserRole.STUDENT) {
             const student = await this.studentRepository.findStudentByEmail(payload.email);
-            return await this.generateToken(user, student.nim, UserRole.STUDENT);
+            return this.generateToken(user, student.nim, UserRole.STUDENT);
         } else {
             const lecturer = await this.lecturerRepository.findLecturerByEmail(payload.email);
-            return await this.generateToken(user, lecturer.nip, UserRole.LECTURER);
+            return this.generateToken(user, lecturer.nip, UserRole.LECTURER);
         }
+    }
+
+    public async refreshToken(refreshToken: string) : Promise<TokenDTO> {
+        const payload = this.verifyRefreshToken(refreshToken);
+        const user = await this.authRepository.findExistingUser(payload.email);
+        if (!user) throw AuthException.userNotFound();
+
+        if (user.role === UserRole.STUDENT) {
+            const student = await this.studentRepository.findStudentByEmail(payload.email);
+            return this.generateToken(user, student.nim, UserRole.STUDENT);
+        } else {
+            const lecturer = await this.lecturerRepository.findLecturerByEmail(payload.email);
+            return this.generateToken(user, lecturer.nip, UserRole.LECTURER);
+        }
+    }
+
+    private verifyRefreshToken(refreshToken: string) : TokenPayload {
+        return this.jwtService.verify(refreshToken, {
+            secret: Config.JWT_REFRESH_SECRET,
+            issuer: Config.JWT_ISSUER,
+            audience: Config.JWT_AUDIENCE,
+        });
     }
 
     public async findExistingUser (email: string) : Promise<Users> {
         return await this.authRepository.findExistingUser(email);
     }
 
-    private async generateToken(user: Users, identity: string, role: UserRole) : Promise<string> {
-        const jwtPayload = {
+    private generateToken(user: Users, identity: string, role: UserRole) : TokenDTO {
+        const accessToken = this.generateAccessToken(user, identity, role);
+        const refreshToken = this.generateRefreshToken(user);
+        return new TokenDTO(accessToken, refreshToken);   
+    }
+
+    private generateRefreshToken(user: Users) : string {
+        const payload = this.generateRefreshTokenPayload(user);
+        return this.jwtService.sign(payload, {
+            expiresIn: Config.JWT_REFRESH_EXPIRES_IN,
+            issuer: Config.JWT_ISSUER,
+            audience: Config.JWT_AUDIENCE,
+            secret: Config.JWT_REFRESH_SECRET
+        });
+    }
+
+    private generateAccessToken(user: Users, identity: string, role: UserRole) : string {
+        const payload = this.generateAccessTokenPayload(user, identity, role);
+        return this.jwtService.sign(payload, {
+            expiresIn: Config.JWT_EXPIRES_IN,
+            issuer: Config.JWT_ISSUER,
+            audience: Config.JWT_AUDIENCE,
+            secret: Config.JWT_SECRET,
+        });
+    }
+
+    private generateRefreshTokenPayload(user: Users) : TokenPayload {
+        return {
+            sub: user.id_user,
+            email: user.email,
+            role: user.role as UserRole,
+        };
+    }
+
+    private generateAccessTokenPayload(user: Users, identity: string, role: UserRole) : TokenPayload {
+        return {
             sub: user.id_user,
             email: user.email,
             role: user.role as UserRole,
             nim: role === UserRole.STUDENT ? identity : '-',
             nip: role === UserRole.STUDENT ? '-' : identity,
-        } as TokenPayload;
-        
-        return this.jwtService.signAsync(jwtPayload);
+        };
     }
 
     private async hashPassword(password: string): Promise<string> {

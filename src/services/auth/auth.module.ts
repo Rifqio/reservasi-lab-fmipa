@@ -9,9 +9,8 @@ import { RepositoriesModule } from 'src/database/repositories/repositories.modul
     imports: [
         JwtModule.register({
             global: true,
-            secret: Config.JWT_SECRET,
-            signOptions: { issuer: Config.JWT_ISSUER, expiresIn: '1d' },
-            verifyOptions: { issuer: Config.JWT_ISSUER },
+            // secret: Config.JWT_SECRET,
+            // verifyOptions: { issuer: Config.JWT_ISSUER },
         }),
         RepositoriesModule,
     ],

@@ -1,11 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { LabReservationRepositories } from 'src/database/repositories/lab-reservation.repositories';
-import { LabReservationRequest } from './dto/request';
+import { LabReservationRequest, LabClearanceRequest } from './dto/request';
 import { BusinessException } from 'src/server/exception/business.exception';
 import { ApiRequest } from 'src/server/request/api.request';
 import { UserRole } from '../auth/dto/user-role.enum';
 import { CurrentLabReservationResponse } from './dto/response';
-import { LabClearanceRequest } from './dto/request/lab-clearance.request';
 import { LabClearanceRepositories } from 'src/database/repositories/lab-clearance.repositories';
 
 @Injectable()
@@ -71,7 +70,7 @@ export class LabService {
     }
 
     // prettier-ignore
-    private async validateReservation(labId: string, startDate: Date, endDate: Date) : Promise<void> {
+    private async validateReservation(labId: number, startDate: Date, endDate: Date) : Promise<void> {
         const reservations = await this.labReservationRepository.findReservationByLabIdAndDate(labId, startDate, endDate);
         if (reservations.length > 0) {
             this.logger.error(`Lab id ${labId} already reserved for the date ${startDate} - ${endDate}`);

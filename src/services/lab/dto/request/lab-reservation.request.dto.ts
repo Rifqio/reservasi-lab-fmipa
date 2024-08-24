@@ -3,7 +3,7 @@ import { IsDate, IsEnum, IsNotEmpty } from "class-validator";
 
 export class LabReservationRequest {
     @IsNotEmpty()
-    public lab_id: string;
+    public lab_id: number;
     
     @IsNotEmpty()
     public lab_tools_name: Array<string>;

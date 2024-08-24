@@ -7,6 +7,7 @@ import {
     ForbiddenExceptionFilter,
     GlobalExceptionFilter,
     JsonWebTokenErrorFilter,
+    NotFoundExceptionFilter,
 } from './filter/global-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -29,6 +30,7 @@ async function bootstrap() {
         new GlobalExceptionFilter(),
         new AuthExceptionFilter(),
         new JsonWebTokenErrorFilter(),
+        new NotFoundExceptionFilter(),
         new BadRequestExceptionFilter(),
         new ForbiddenExceptionFilter(),
     );

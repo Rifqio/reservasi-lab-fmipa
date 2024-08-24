@@ -56,6 +56,6 @@ export class DatabaseService
     }
 
     async onModuleDestroy() {
-        await this.$disconnect();
+        // await this.$disconnect();
     }
 }

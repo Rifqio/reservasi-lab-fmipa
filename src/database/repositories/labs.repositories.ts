@@ -8,4 +8,16 @@ export class LabsRepositories {
     public async findAll(): Promise<Array<Labs>> {
         return await this.db.labs.findMany({});
     }
+
+    public async createBatch(data: Array<string>) {
+        return await this.db.$transaction(
+            data.map((lab) => {
+                return this.db.labs.create({
+                    data: {
+                        name: lab,
+                    },
+                });
+            }),
+        );
+    }
 }

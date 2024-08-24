@@ -7,6 +7,7 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    NotFoundException,
 } from '@nestjs/common';
 import { JsonWebTokenError } from '@nestjs/jwt';
 import { Request, Response } from 'express';
@@ -27,6 +28,21 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
         this.logger.error(`[${request.method}] ${request.url}`, exception);
         response.status(exception.getStatus()).json(jsonResponse);
+    }
+}
+
+@Catch(NotFoundException)
+export class NotFoundExceptionFilter implements ExceptionFilter {
+    private readonly logger = new Logger(NotFoundExceptionFilter.name);
+    catch(exception: NotFoundException, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
+
+        const jsonResponse = new ErrorResponse('Requested resource or page not found', null);
+
+        this.logger.error(`[${request.method}] ${request.url}`, exception);
+        response.status(HttpStatus.NOT_FOUND).json(jsonResponse);
     }
 }
 

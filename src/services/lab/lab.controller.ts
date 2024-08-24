@@ -1,13 +1,12 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { LabService } from './lab.service';
-import { LabReservationRequest } from './dto/request';
+import { LabReservationRequest, LabClearanceRequest } from './dto/request';
 import { RoleGuard } from 'src/server/guard/role.guard';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { UserRole } from '../auth/dto/user-role.enum';
 import { ApiRequest } from 'src/server/request';
 import { SuccessResponse } from 'src/server/response';
 import { CurrentLabReservationResponse, LabReservationResponse, RequestClearanceResponse } from './dto/response';
-import { LabClearanceRequest } from './dto/request/lab-clearance.request';
 
 @Controller('api/v1/lab')
 @UseGuards(RoleGuard)

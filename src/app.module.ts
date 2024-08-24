@@ -6,9 +6,10 @@ import { AuthGuard } from './server/guard/auth.guard';
 import { ListModule } from './services/list/list.module';
 import { SampleModule } from './services/sample/sample.module';
 import { LabModule } from './services/lab/lab.module';
+import { SeedModule } from './services/seed/seed.module';
 
 @Module({
-    imports: [AuthModule, ProfileModule, ListModule, SampleModule, LabModule],
+    imports: [AuthModule, ProfileModule, ListModule, SampleModule, LabModule, SeedModule],
     providers: [
         {
             provide: APP_GUARD,

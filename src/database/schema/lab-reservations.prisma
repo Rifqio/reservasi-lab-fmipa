@@ -1,7 +1,7 @@
 model LabReservations {
     id_reservation      String             @id @map("id_reservation") @db.VarChar(30)
     letter_number       String             @db.VarChar(30)
-    lab_id              String             @db.VarChar(10)
+    lab_id              Int             
     lab_tools_name      Json
     research_title      String             @db.Text
     source_of_funding   SourceOfFunding    @default(LAINNYA)

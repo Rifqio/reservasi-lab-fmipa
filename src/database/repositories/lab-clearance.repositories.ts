@@ -1,4 +1,4 @@
-import { LabClearanceRequest } from 'src/services/lab/dto/request/lab-clearance.request';
+import { LabClearanceRequest } from 'src/services/lab/dto/request/lab-clearance.request.dto';
 import { DatabaseService } from '../database.service.';
 import { Utils } from 'src/commons/utils';
 import { LabClearanceStatus } from 'src/services/lab/dto/lab-clearance-status.enum';

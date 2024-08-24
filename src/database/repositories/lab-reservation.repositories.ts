@@ -28,7 +28,7 @@ export class LabReservationRepositories {
     }
 
     // prettier-ignore
-    public async findReservationByLabIdAndDate(labId: string, startDate: Date, endDate: Date) {
+    public async findReservationByLabIdAndDate(labId: number, startDate: Date, endDate: Date) {
         return await this.db.labReservations.findMany({
             where: {
                 lab_id: labId,

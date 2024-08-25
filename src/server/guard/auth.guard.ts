@@ -1,10 +1,5 @@
-import {
-    CanActivate,
-    ExecutionContext,
-    Injectable,
-    Logger,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Config } from 'src/config/config';
 import { AuthException } from 'src/server/exception/auth.exception';
@@ -21,10 +16,10 @@ export class AuthGuard implements CanActivate {
     private logger = new Logger(AuthGuard.name);
 
     public async canActivate(context: ExecutionContext): Promise<boolean> {
-        const isPublic = this.reflector.getAllAndOverride<boolean>(
-            IS_PUBLIC_KEY,
-            [context.getHandler(), context.getClass()],
-        );
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
 
         if (isPublic) {
             return true;
@@ -37,15 +32,13 @@ export class AuthGuard implements CanActivate {
         }
 
         try {
-            const payload: TokenPayload = await this.jwtService.verifyAsync(
-                token,
-                {
-                    secret: Config.JWT_SECRET,
-                    issuer: Config.JWT_ISSUER,
-                },
-            );
+            const payload: TokenPayload = await this.jwtService.verifyAsync(token, {
+                secret: Config.JWT_SECRET,
+                issuer: Config.JWT_ISSUER,
+            });
             request['user'] = payload;
         } catch (error) {
+            if (error instanceof TokenExpiredError) throw AuthException.tokenExpired();
             this.logger.error(error);
             throw AuthException.unauthorized();
         }

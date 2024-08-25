@@ -2,6 +2,7 @@
  * This define configuration class to store all the environment variables
  */
 export class Config {
+    public static readonly APP_PORT = process.env.APP_PORT;
     public static readonly JWT_SECRET = process.env.JWT_SECRET;
     public static readonly JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
     public static readonly JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN;

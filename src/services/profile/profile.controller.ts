@@ -18,6 +18,7 @@ export class ProfileController {
 
     // prettier-ignore
     @Get()
+    @Roles(UserRole.STUDENT, UserRole.LECTURER)
     public async getProfile(@Request() request: ApiRequest) : Promise<SuccessResponse<StudentProfile | LecturerProfile>> {
         const profile = await this.profileService.getProfile(request);
         return SuccessResponse.successWithData('Profile has been fetched', profile);

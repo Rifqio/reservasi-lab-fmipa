@@ -13,6 +13,10 @@ export class AuthException extends HttpException {
         return new AuthException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
+    public static tokenExpired(): AuthException {
+        return new AuthException('Token expired', HttpStatus.UNAUTHORIZED);
+    }
+
     public static userNotFound(): AuthException {
         return new AuthException('Invalid email or password', HttpStatus.NOT_FOUND);
     }

@@ -1,8 +1,14 @@
+import { Expose } from "class-transformer";
+
 export class LoginResponse {
     constructor(accessToken: string, refreshToken: string) {
-        this.access_token = accessToken;
-        this.refresh_token = refreshToken
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken
     }
-    access_token: string;
-    refresh_token: string;
+
+    @Expose({ name: 'access_token' })
+    accessToken: string;
+
+    @Expose({ name: 'refresh_token' })
+    refreshToken: string;
 }

@@ -42,11 +42,11 @@ export class StudentRepositories {
 
         return new StudentProfile({
             batch: student.batch,
-            full_name: student.User.full_name,
+            fullName: student.User.full_name,
             nim: student.nim,
-            phone_number: student.phone_number,
-            study_program: student.study_program,
-            user_email: student.user_email,
+            phoneNumber: student.phone_number,
+            studyProgram: student.study_program,
+            userEmail: student.user_email,
         })
     }
 
@@ -78,9 +78,9 @@ export class StudentRepositories {
             },
             data: {
                 nim: payload.nim,
-                phone_number: payload.phone_number,
+                phone_number: payload.phoneNumber,
                 batch: payload.batch,
-                study_program: payload.study_program,
+                study_program: payload.studyProgram,
             },
         });
     }

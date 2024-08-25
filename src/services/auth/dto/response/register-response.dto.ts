@@ -1,6 +1,10 @@
+import { Expose } from "class-transformer";
+
 export class RegisterResponse {
     constructor(userId: string) {
-        this.user_id = userId;
+        this.userId = userId;
     }
-    user_id: string;
+
+    @Expose({ name: 'user_id' })
+    userId: string;
 }

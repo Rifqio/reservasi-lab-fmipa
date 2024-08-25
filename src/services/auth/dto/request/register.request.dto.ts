@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { IsEmail, IsNotEmpty, Length } from 'class-validator';
 import { IsPasswordMatch, IsValidUNSEmail } from 'src/commons/decorators';
 
@@ -8,7 +9,8 @@ export class RegisterRequestDTO {
     email: string;
 
     @IsNotEmpty()
-    full_name: string;
+    @Expose({ name: 'full_name' })
+    fullName: string;
 
     @IsNotEmpty()
     @Length(8, 100)
@@ -17,5 +19,6 @@ export class RegisterRequestDTO {
     @IsNotEmpty()
     @Length(8, 100)
     @IsPasswordMatch('password', { message: 'Password and confirm password do not match' })
-    confirm_password: string;
+    @Expose({ name: 'confirm_password' })
+    confirmPassword: string;
 }

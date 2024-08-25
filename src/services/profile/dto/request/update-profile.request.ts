@@ -1,4 +1,5 @@
-import { IsNotEmpty, Length } from "class-validator";
+import { Expose } from 'class-transformer';
+import { IsNotEmpty, Length } from 'class-validator';
 
 export class UpdateStudentProfileRequest {
     @IsNotEmpty()
@@ -6,11 +7,13 @@ export class UpdateStudentProfileRequest {
 
     @IsNotEmpty()
     @Length(12, 12)
-    public phone_number: string;
-    
+    @Expose({ name: 'phone_number' })
+    public phoneNumber: string;
+
     @IsNotEmpty()
-    public study_program: string;
-    
+    @Expose({ name: 'study_program' })
+    public studyProgram: string;
+
     @Length(4, 4)
     public batch: number;
 }

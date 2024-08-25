@@ -1,26 +1,38 @@
+import { Expose } from "class-transformer";
+
 interface IStudentProfile {
     nim: string;
-    user_email: string;
-    full_name: string;
-    phone_number: string;
+    userEmail: string;
+    fullName: string;
+    phoneNumber: string;
     batch: number;
-    study_program: string;
+    studyProgram: string;
 }
 
 export class StudentProfile {
     constructor(data: IStudentProfile) {
         this.nim = data.nim;
-        this.user_email = data.user_email;
-        this.full_name = data.full_name;
-        this.phone_number = data.phone_number;
+        this.userEmail = data.userEmail;
+        this.fullName = data.fullName;
+        this.phoneNumber = data.phoneNumber;
         this.batch = data.batch;
-        this.study_program = data.study_program;
+        this.studyProgram = data.studyProgram;
     }
 
     public nim: string;
-    public user_email: string;
-    public full_name: string;
-    public phone_number: string;
+
+    @Expose({ name: 'user_email' })
+    public userEmail: string;
+
+
+    @Expose({ name: 'full_name' })
+    public fullName: string;
+    
+    @Expose({ name: 'phone_number' })
+    public phoneNumber: string;
+    
     public batch: number;
-    public study_program: string;
+    
+    @Expose({ name: 'study_program' })
+    public studyProgram: string;
 }

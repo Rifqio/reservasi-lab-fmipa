@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO, UserRole } from './dto';
+import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO, UserRole, LoginResponse } from './dto';
 import { AuthException } from 'src/server/exception/auth.exception';
 import { AuthRepositories } from 'src/database/repositories/auth.repositories';
 import { JwtService } from '@nestjs/jwt';
@@ -35,7 +35,7 @@ export class AuthService {
         return userId;
     }
 
-    public async login(payload: LoginRequestDTO): Promise<TokenDTO> {
+    public async login(payload: LoginRequestDTO): Promise<LoginResponse> {
         const user = await this.authRepository.findExistingUser(payload.email);
         if (!user) throw AuthException.userNotFound();
         if (user.is_email_verified === false) throw AuthException.emailNotVerified();
@@ -52,7 +52,7 @@ export class AuthService {
         }
     }
 
-    public async refreshToken(refreshToken: string): Promise<TokenDTO> {
+    public async refreshToken(refreshToken: string): Promise<LoginResponse> {
         const payload = this.verifyRefreshToken(refreshToken);
         const user = await this.authRepository.findExistingUser(payload.email);
         if (!user) throw AuthException.userNotFound();
@@ -80,10 +80,10 @@ export class AuthService {
         return await this.authRepository.findExistingUser(email);
     }
 
-    private generateToken(user: Users, identity: string, role: UserRole): TokenDTO {
+    private generateToken(user: Users, identity: string, role: UserRole): LoginResponse {
         const accessToken = this.generateAccessToken(user, identity, role);
         const refreshToken = this.generateRefreshToken(user);
-        return new TokenDTO(accessToken, refreshToken);
+        return new LoginResponse(accessToken, refreshToken);
     }
 
     private generateRefreshToken(user: Users): string {

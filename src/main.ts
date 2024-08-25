@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import {
     AuthExceptionFilter,
     BadRequestExceptionFilter,
@@ -9,22 +9,12 @@ import {
     JsonWebTokenErrorFilter,
     NotFoundExceptionFilter,
 } from './filter/global-exception.filter';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
+import { Config } from './config/config';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
-    const config = new DocumentBuilder()
-        .setTitle('Reservasi Lab')
-        .setDescription('Reservasi Lab Untuk Fakultas MIPA')
-        .setVersion('1.0')
-        .build();
-
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
-
-    app.useGlobalPipes(
-        new ValidationPipe({ enableDebugMessages: true, whitelist: true }),
-    );
+    app.enableCors({ credentials: true, origin: true, methods: 'GET,HEAD,PATCH,POST,DELETE,OPTIONS' });
+    app.useGlobalPipes(new ValidationPipe({ enableDebugMessages: true, whitelist: true, transform: true }));
+    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
     app.useGlobalFilters(
         new GlobalExceptionFilter(),
@@ -34,6 +24,6 @@ async function bootstrap() {
         new BadRequestExceptionFilter(),
         new ForbiddenExceptionFilter(),
     );
-    await app.listen(3000);
+    await app.listen(Config.APP_PORT);
 }
 bootstrap();

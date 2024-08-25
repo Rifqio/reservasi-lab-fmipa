@@ -46,7 +46,7 @@ export class AuthRepositories {
             data: {
                 id_user: faker.string.uuid(),
                 email: payload.email,
-                full_name: payload.full_name,
+                full_name: payload.fullName,
                 is_email_verified: true, // For the sake of testing, we assume that the email is always verified
                 password: payload.password,
                 role: role,

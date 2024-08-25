@@ -1,0 +1,21 @@
+model SampleTests {
+    id_sample_tests Int       @id @default(autoincrement())
+    user_email      String
+    letter_number   String    @db.VarChar(100)
+    invoice_number  String    @db.VarChar(100)
+    research_title  String    @db.VarChar(255)
+    sample_name     String    @db.VarChar(255)
+    sample_quantity Int
+    date_received   DateTime
+    date_completed  DateTime?
+    notes           String?   @db.Text
+    created_at      DateTime  @default(now())
+    updated_at      DateTime  @updatedAt
+
+    User           Users            @relation(fields: [user_email], references: [email])
+    SamplePayments SamplePayments[]
+
+    @@index([user_email], name: "idx_test_sample_user_email")
+    @@index([date_received], name: "idx_test_sample_date_received")
+    @@map("sample_tests")
+}

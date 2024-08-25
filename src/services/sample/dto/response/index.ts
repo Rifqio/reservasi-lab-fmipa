@@ -1,0 +1,1 @@
+export { CreateSampleResponse } from './create-sample.response.dto';

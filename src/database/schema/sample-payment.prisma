@@ -1,0 +1,20 @@
+model SamplePayments {
+    id_sample_payments   Int           @id @default(autoincrement())
+    sample_test_id       Int
+    payment_code         String        @db.VarChar(100)
+    payment_status       PaymentStatus @default(PENDING)
+    payment_evidence_url String?       @db.Text
+    created_at           DateTime      @default(now())
+    updated_at           DateTime      @updatedAt
+
+    SampleTests SampleTests @relation(fields: [sample_test_id], references: [id_sample_tests])
+
+    @@index([payment_status], name: "idx_sample_payment_status")
+    @@map("sample_payments")
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    CANCELLED
+}

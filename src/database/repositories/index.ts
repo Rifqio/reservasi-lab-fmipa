@@ -1,0 +1,9 @@
+export { AuthRepositories } from './auth.repositories';
+export { SampleTestRepositories } from './sample-test.repositories';
+export { UserRepositories } from './user.repositories';
+export { LabsRepositories } from './labs.repositories';
+export { LabClearanceRepositories } from './lab-clearance.repositories';
+export { LabReservationRepositories } from './lab-reservation.repositories';
+export { LecturerRepositories } from './lecturer.repositories';
+export { StudentRepositories } from './student.repositories';
+export { StudyProgramRepositories } from './study-program.repositories';

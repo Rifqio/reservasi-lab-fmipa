@@ -13,6 +13,7 @@ model Users {
     @@index([role], name: "users_role_idx")
     Students Students[]
     Lecturers Lecturers[]
+    SampleTests SampleTests[]
 }
 
 enum Role {

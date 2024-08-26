@@ -1,5 +1,5 @@
 model LabTools {
     @@map("lab_tools")
-    id_lab_tools Int    @id @map("id_lab_tools") @db.Int
+    id_lab_tools Int    @id @default(autoincrement()) @map("id_lab_tools") @db.Int
     name         String @db.VarChar(100)
 }

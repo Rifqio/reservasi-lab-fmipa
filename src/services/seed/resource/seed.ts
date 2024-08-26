@@ -24,4 +24,34 @@ export class Seed {
             'S1 Statistika',
         ];
     }
+
+    public static labToolsData() {
+        return [
+            'Mikroskop',
+            'Beaker Glass',
+            'Erlenmeyer Flask',
+            'Test Tube',
+            'Bunsen Burner',
+            'Pipette',
+            'Petri Dish',
+            'Centrifuge',
+            'Spectrophotometer',
+            'Analytical Balance',
+            'Hot Plate',
+            'Magnetic Stirrer',
+            'Oscilloscope',
+            'Voltmeter',
+            'Ammeter',
+            'Soldering Iron',
+            'Digital Multimeter',
+            'DNA Sequencer',
+            'Autoclave',
+            'Incubator',
+            'Refrigerator',
+            'Fume Hood',
+            'Safety Goggles',
+            'Lab Coat',
+            'Gloves',
+        ];
+    }
 }

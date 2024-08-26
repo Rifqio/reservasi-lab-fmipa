@@ -19,4 +19,10 @@ export class SeedController {
         await this.seedService.seedLabs();
         return SuccessResponse.success('Labs has been seeded');
     }
+
+    @Post('lab-tools')
+    public async seedLabTools() : Promise<SuccessResponse<void>> {
+        await this.seedService.seedLabTools();
+        return SuccessResponse.success('Lab tools has been seeded');
+    }
 }

@@ -9,6 +9,7 @@ import { LabReservationRepositories } from './lab-reservation.repositories';
 import { LabClearanceRepositories } from './lab-clearance.repositories';
 import { LabsRepositories } from './labs.repositories';
 import { SampleTestRepositories } from './sample-test.repositories';
+import { LabToolRepositories } from './lab-tools.repositories';
 
 @Module({
     exports: [
@@ -22,6 +23,7 @@ import { SampleTestRepositories } from './sample-test.repositories';
         LabClearanceRepositories,
         StudyProgramRepositories,
         SampleTestRepositories,
+        LabToolRepositories
     ],
     providers: [
         DatabaseService,
@@ -33,7 +35,8 @@ import { SampleTestRepositories } from './sample-test.repositories';
         LabsRepositories,
         LabClearanceRepositories,
         StudyProgramRepositories,
-        SampleTestRepositories
+        SampleTestRepositories,
+        LabToolRepositories
     ],
 })
 export class RepositoriesModule {}

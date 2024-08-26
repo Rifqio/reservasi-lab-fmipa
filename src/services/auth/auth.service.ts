@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO, UserRole, LoginResponse } from './dto';
 import { AuthException } from 'src/server/exception/auth.exception';
 import { AuthRepositories } from 'src/database/repositories/auth.repositories';
@@ -9,6 +9,7 @@ import { LecturerRepositories } from 'src/database/repositories/lecturer.reposit
 import { Users } from '@prisma/client';
 import { Utils } from 'src/commons/utils';
 import { Config } from 'src/config/config';
+import { Encryption } from 'src/commons/encryption';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,8 @@ export class AuthService {
         private studentRepository: StudentRepositories,
         private lecturerRepository: LecturerRepositories,
     ) {}
+
+    private logger = new Logger(AuthService.name);
 
     public async register(payload: RegisterRequestDTO): Promise<string> {
         const user = await this.findExistingUser(payload.email);
@@ -67,23 +70,30 @@ export class AuthService {
     }
 
     private verifyRefreshToken(refreshToken: string): TokenPayload {
-        const verify = this.jwtService.verify(refreshToken, {
-            secret: Config.JWT_REFRESH_SECRET,
-            issuer: Config.JWT_ISSUER,
-            audience: Config.JWT_AUDIENCE,
-        });
-        if (!verify) throw AuthException.invalidToken();
-        return verify;
+        try {
+            const decryptedRefreshToken = Encryption.decrypt(refreshToken);
+            return this.jwtService.verify(decryptedRefreshToken, {
+                secret: Config.JWT_REFRESH_SECRET,
+                issuer: Config.JWT_ISSUER,
+                audience: Config.JWT_AUDIENCE,
+            });            
+        } catch (error) {
+            this.logger.error(error);
+            throw AuthException.unauthorized();
+        }
     }
 
-    public async findExistingUser(email: string): Promise<Users> {
+    private async findExistingUser(email: string): Promise<Users> {
         return await this.authRepository.findExistingUser(email);
     }
 
     private generateToken(user: Users, identity: string, role: UserRole): LoginResponse {
         const accessToken = this.generateAccessToken(user, identity, role);
         const refreshToken = this.generateRefreshToken(user);
-        return new LoginResponse(accessToken, refreshToken);
+
+        const encryptedAccessToken = Encryption.encrypt(accessToken);
+        const encryptedRefreshToken = Encryption.encrypt(refreshToken);
+        return new LoginResponse(encryptedAccessToken, encryptedRefreshToken, role);
     }
 
     private generateRefreshToken(user: Users): string {

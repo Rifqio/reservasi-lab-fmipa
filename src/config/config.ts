@@ -13,4 +13,7 @@ export class Config {
     public static readonly SMTP_PORT = process.env.SMTP_PORT;
     public static readonly SMTP_USER = process.env.SMTP_USER;
     public static readonly SMTP_PASS = process.env.SMTP_PASS;
+    public static readonly PRIVATE_IV = process.env.PRIVATE_IV;
+    public static readonly PRIVATE_SECRET = process.env.PRIVATE_SECRET;
+    public static readonly PRIVATE_ALGORITHM = process.env.PRIVATE_ALGORITHM;
 }

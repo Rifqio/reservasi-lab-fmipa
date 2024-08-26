@@ -18,7 +18,7 @@ export class AuthException extends HttpException {
     }
 
     public static userNotFound(): AuthException {
-        return new AuthException('Invalid email or password', HttpStatus.NOT_FOUND);
+        return new AuthException('Invalid email or password', HttpStatus.UNAUTHORIZED);
     }
 
     public static invalidPassword(): AuthException {

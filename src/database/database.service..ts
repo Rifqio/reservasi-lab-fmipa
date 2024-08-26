@@ -21,9 +21,14 @@ export class DatabaseService
             log: [
                 { level: 'query', emit: 'event' },
                 { level: 'info', emit: 'stdout' },
-                { level: 'warn', emit: 'stdout' },
+                { level: 'warn', emit: 'stdout', },
                 { level: 'error', emit: 'stdout' },
             ],
+            errorFormat: 'pretty',
+            transactionOptions: {
+                timeout: 10000,
+                isolationLevel: 'ReadCommitted'
+            }
         });
 
         // @ts-ignore

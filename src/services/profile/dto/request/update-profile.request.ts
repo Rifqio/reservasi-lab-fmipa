@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNotEmpty, Length } from 'class-validator';
+import { IsInt, IsNotEmpty, Length, Max, Min } from 'class-validator';
 
 export class UpdateStudentProfileRequest {
     @IsNotEmpty()
@@ -14,7 +14,9 @@ export class UpdateStudentProfileRequest {
     @Expose({ name: 'study_program' })
     public studyProgram: string;
 
-    @Length(4, 4)
+    @IsInt()
+    @Min(2010, { message: 'You are not allowed to input batch below 2010' })
+    @Max(new Date().getFullYear(), { message: 'You are not allowed to input batch above current year' })
     public batch: number;
 }
 

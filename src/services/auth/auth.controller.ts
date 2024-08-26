@@ -21,15 +21,13 @@ export class AuthController {
     @Post('login')
     public async login(@Body() payload: LoginRequestDTO): Promise<SuccessResponse<LoginResponse>> {
         const token = await this.authService.login(payload);
-        const response = new LoginResponse(token.accessToken, token.refreshToken);
-        return SuccessResponse.successWithData('User has been logged in', response);
+        return SuccessResponse.successWithData('User has been logged in', token);
     }
 
     @HttpCode(HttpStatus.OK)
     @Post('refresh-token')
     public async refreshToken(@Body() payload: RefreshTokenRequestDTO): Promise<SuccessResponse<LoginResponse>> {
         const token = await this.authService.refreshToken(payload.refreshToken);
-        const response = new LoginResponse(token.accessToken, token.refreshToken);
-        return SuccessResponse.successWithData('Token has been refreshed', response);
+        return SuccessResponse.successWithData('Token has been refreshed', token);
     }
 }

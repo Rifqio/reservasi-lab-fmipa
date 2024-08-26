@@ -6,6 +6,7 @@ import { AuthException } from 'src/server/exception/auth.exception';
 import { TokenPayload } from '../../services/auth/dto/token-payload';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/commons/decorators/public.decorator';
+import { Encryption } from 'src/commons/encryption';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -27,12 +28,14 @@ export class AuthGuard implements CanActivate {
 
         const request = context.switchToHttp().getRequest<Request>();
         const token = this.extractTokenFromHeader(request);
+        
         if (!token) {
             throw AuthException.unauthorized();
         }
 
         try {
-            const payload: TokenPayload = await this.jwtService.verifyAsync(token, {
+            const decryptedToken = Encryption.decrypt(token);
+            const payload: TokenPayload = await this.jwtService.verifyAsync(decryptedToken, {
                 secret: Config.JWT_SECRET,
                 issuer: Config.JWT_ISSUER,
             });

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { LabService } from './lab.service';
-import { LabReservationRequest, LabClearanceRequest } from './dto/request';
+import { LabReservationRequest, LabClearanceRequest, LabVerifyRequest } from './dto/request';
 import { RoleGuard } from 'src/server/guard/role.guard';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { UserRole } from '../auth/dto/user-role.enum';
@@ -34,5 +34,12 @@ export class LabController {
         const clearance = await this.labService.requestClearance(payload, req.user.nim);
         const response = new RequestClearanceResponse(clearance);
         return SuccessResponse.successWithData('Clearance request success', response);
+    }
+
+    @Patch('reservation/verify/:id')
+    @Roles(UserRole.ADMIN)
+    public async verifyLabReservation(@Body() payload: LabVerifyRequest, @Param() id: string) {
+        await this.labService.verifyLabReservation(payload, id);
+        return SuccessResponse.success('Lab reservation has been verified');
     }
 }

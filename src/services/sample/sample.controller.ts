@@ -23,6 +23,14 @@ export class SampleController {
         return SuccessResponse.successWithData('Sample test has been created', sample);
     }
 
+    @Post('payment')
+    @Roles(UserRole.STUDENT)
+    public async payTestSample(@Request() request: ApiRequest) : Promise<SuccessResponse<void>> {
+        const email = request.user.email;
+        // await this.sampleService.payTestSample(email);
+        return SuccessResponse.success('Sample test has been paid');
+    }
+
     @Get()
     public async getTestSample() {}
 }

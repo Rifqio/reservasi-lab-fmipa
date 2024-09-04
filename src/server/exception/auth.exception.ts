@@ -21,6 +21,10 @@ export class AuthException extends HttpException {
         return new AuthException('Invalid email or password', HttpStatus.UNAUTHORIZED);
     }
 
+    public static userProfileNotSet(): AuthException {
+        return new AuthException('User profile not set', HttpStatus.UNAUTHORIZED);
+    }
+
     public static invalidPassword(): AuthException {
         return new AuthException('Invalid email or password', HttpStatus.UNAUTHORIZED);
     }

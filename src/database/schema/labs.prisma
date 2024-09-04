@@ -1,8 +1,9 @@
 model Labs {
     id_labs         Int               @id @default(autoincrement()) @map("id_labs")
-    name            String            @db.VarChar(100)
+    name            String            @db.VarChar(100) @unique
     LabReservations LabReservations[]
 
     @@index([name], name: "labs_name_idx")
     @@map("labs")
+    LabTools LabTools[]
 }

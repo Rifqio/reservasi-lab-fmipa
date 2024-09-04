@@ -1,12 +1,12 @@
 model LabReservations {
-    id_reservation      String             @id @map("id_reservation") @db.VarChar(30)
+    id_reservation      String             @id @map("id_reservation") @db.VarChar(36)
     letter_number       String             @db.VarChar(30)
     lab_id              Int             
     lab_tools_name      Json
     research_title      String             @db.Text
     source_of_funding   SourceOfFunding    @default(LAINNYA)
     reservation_purpose ReservationPurpose
-    nim                 String             @db.VarChar(10)
+    nim                 String             @db.VarChar(15)
     status              Status             @default(PENDING)
     approval_letter_url String?            @db.Text
     start_date          DateTime           @db.Date

@@ -4,6 +4,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import {
     AuthExceptionFilter,
     BadRequestExceptionFilter,
+    BusinessExceptionFilter,
     ForbiddenExceptionFilter,
     GlobalExceptionFilter,
     JsonWebTokenErrorFilter,
@@ -17,6 +18,7 @@ async function bootstrap() {
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
     app.useGlobalFilters(
         new GlobalExceptionFilter(),
+        new BusinessExceptionFilter(),
         new AuthExceptionFilter(),
         new JsonWebTokenErrorFilter(),
         new NotFoundExceptionFilter(),

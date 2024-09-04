@@ -24,7 +24,6 @@ export class StudentProfile {
     @Expose({ name: 'user_email' })
     public userEmail: string;
 
-
     @Expose({ name: 'full_name' })
     public fullName: string;
     

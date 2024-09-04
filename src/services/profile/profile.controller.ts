@@ -10,7 +10,6 @@ import { RoleGuard } from 'src/server/guard/role.guard';
 import { StudentProfile } from './dto/response/student-profile.response';
 import { LecturerProfile } from './dto/response/lecturer-profile.response';
 
-
 @Controller('api/v1/profile')
 @UseGuards(RoleGuard)
 export class ProfileController {

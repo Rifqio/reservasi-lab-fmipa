@@ -1,6 +1,7 @@
 model Lecturers {
-    user_email String @id @map("user_email") @db.VarChar(100)
-    nip        String @db.VarChar(30)
+    user_email     String  @id @map("user_email") @db.VarChar(100)
+    nip            String  @db.VarChar(30)
+    is_head_of_lab Boolean @default(false)
 
     User Users @relation(fields: [user_email], references: [email])
 

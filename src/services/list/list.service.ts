@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ListRequestType } from './dto/request';
-import { StudyProgramRepositories } from 'src/database/repositories/study-program.repositories';
-import { LabsRepositories } from 'src/database/repositories/labs.repositories';
-import { ListResponse } from './dto/response';
+import { camelCase, startCase } from 'lodash';
 import { LabToolRepositories } from 'src/database/repositories/lab-tools.repositories';
+import { LabsRepositories } from 'src/database/repositories/labs.repositories';
+import { StudyProgramRepositories } from 'src/database/repositories/study-program.repositories';
+import { ListRequestType } from './dto/request';
+import { ListResponse } from './dto/response';
 
 @Injectable()
 export class ListService {
@@ -14,7 +15,7 @@ export class ListService {
     ) {}
 
     // prettier-ignore
-    public async getLists(type: ListRequestType) : Promise<Array<ListResponse>> {
+    public async getLists(type: ListRequestType, labName: string) : Promise<Array<ListResponse>> {
         let data: Array<ListResponse> = null;
         switch (type) {
             case ListRequestType.STUDY_PROGRAM:
@@ -26,11 +27,10 @@ export class ListService {
                 data = labs.map((item) => new ListResponse(item.id_labs, item.name));
                 break;
             case ListRequestType.LAB_TOOLS:
-                const labTools = await this.labToolsRepository.findAll();
+                const transformedLabName = startCase(camelCase(labName));
+                const labTools = await this.labToolsRepository.findByLabName(transformedLabName);
                 data = labTools.map((item) => new ListResponse(item.id_lab_tools, item.name));
                 break;
-            default:
-                throw new Error('Invalid type');
         }
         
         return data;

@@ -1,7 +1,11 @@
+import { Expose } from "class-transformer";
+
 export class LabReservationResponse {
-    constructor(reservation_id: string) {
-        this.reservation_id = reservation_id;
+    @Expose({ name: 'reservation_id' })
+    public reservationId: string;
+    
+    constructor(reservationId: string) {
+        this.reservationId = reservationId;
     }
 
-    public reservation_id: string;
 }

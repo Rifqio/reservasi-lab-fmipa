@@ -86,10 +86,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
 
         // prettier-ignore
         const errorsMessage = (exception.getResponse() as ApiErrorResponseType).message;
-        const jsonResponse = new ErrorResponse(
-            exception.message,
-            errorsMessage,
-        );
+        const jsonResponse = new ErrorResponse(exception.message, errorsMessage);
 
         this.logger.error(`[${request.method}] ${request.url}`, exception);
         response.status(HttpStatus.BAD_REQUEST).json(jsonResponse);

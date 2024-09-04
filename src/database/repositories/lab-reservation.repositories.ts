@@ -11,19 +11,22 @@ export class LabReservationRepositories {
     public async createReservation(data: LabReservationRequest, nim: string) {
         return await this.db.labReservations.create({
             data: {
-                lab_id: data.lab_id,
+                lab_id: data.labId,
                 id_reservation: Utils.generateUUID(),
                 nim: nim,
-                lab_tools_name: data.lab_tools_name,
+                lab_tools_name: data.labToolsName.join(','),
                 letter_number: Utils.generateLetterNumber(),
-                research_title: data.research_title,
-                reservation_purpose: data.reservation_purpose,
+                research_title: data.researchTitle,
+                reservation_purpose: data.reservationPurpose,
                 approval_letter_url: '',
-                start_date: data.start_date,
-                end_date: data.end_date,
-                source_of_funding: data.source_of_funding,
+                start_date: data.startDate,
+                end_date: data.endDate,
+                source_of_funding: data.sourceOfFunding,
                 status: Status.PENDING,
             },
+            select: {
+                id_reservation: true,
+            }
         });
     }
 
@@ -78,5 +81,24 @@ export class LabReservationRepositories {
 
     public async findAll() {
         return await this.db.labReservations.findMany();
+    }
+
+    public async findById(id: string) {
+        return await this.db.labReservations.findUnique({
+            where: {
+                id_reservation: id,
+            },
+        });
+    }
+
+    public async updateStatusReservation(id: string, status: Status) {
+        return await this.db.labReservations.update({
+            where: {
+                id_reservation: id,
+            },
+            data: {
+                status: status,
+            },
+        });
     }
 }

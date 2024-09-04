@@ -1,15 +1,14 @@
 import { Injectable, Logger, NestMiddleware  } from "@nestjs/common";
-import { ApiRequest } from "../request";
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 @Injectable()
 export class RequestLoggerMiddleware implements NestMiddleware {
     private readonly logger = new Logger(RequestLoggerMiddleware.name);
-    use(req: ApiRequest, res: Response, next: NextFunction) {
+    use(req: Request, _: Response, next: NextFunction) {
         if (req.method === 'POST' || req.method === 'PATCH') {
-            this.logger.log(`[${req.method}] ${req.originalUrl} ${JSON.stringify(req.body)} | user: ${req?.user}`);
+            this.logger.log(`[${req.method}] ${req.originalUrl} ${JSON.stringify(req.body)}`);
         } else {
-            this.logger.log(`[${req.method}] ${req.originalUrl} | user: ${req?.user}`);
+            this.logger.log(`[${req.method}] ${req.originalUrl}`);
         }
         next();
     }

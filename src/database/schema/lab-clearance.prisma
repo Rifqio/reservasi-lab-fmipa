@@ -1,5 +1,5 @@
 model LabClearance {
-    id_clearance  String              @id @map("id_clearance") @db.VarChar(30)
+    id_clearance  String              @id @map("id_clearance") @db.VarChar(50)
     nim           String              @db.VarChar(10)
     letter_number String              @db.VarChar(30)
     purpose       LabClearancePurpose

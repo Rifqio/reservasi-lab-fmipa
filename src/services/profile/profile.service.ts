@@ -1,12 +1,12 @@
 import { Injectable, Request } from '@nestjs/common';
+import { Lecturers, Students } from '@prisma/client';
 import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
 import { StudentRepositories } from 'src/database/repositories/student.repositories';
 import { ApiRequest } from 'src/server/request/api.request';
-import { UpdateLecturerProfileRequest, UpdateStudentProfileRequest } from './dto/request';
-import { Lecturers, Students } from '@prisma/client';
 import { UserRole } from '../auth/dto/user-role.enum';
-import { StudentProfile } from './dto/response/student-profile.response';
+import { UpdateLecturerProfileRequest, UpdateStudentProfileRequest } from './dto/request';
 import { LecturerProfile } from './dto/response/lecturer-profile.response';
+import { StudentProfile } from './dto/response/student-profile.response';
 
 @Injectable()
 export class ProfileService {
@@ -28,7 +28,7 @@ export class ProfileService {
 
     // prettier-ignore
     public async updateProfileLecturer(@Request() request: ApiRequest, payload: UpdateLecturerProfileRequest) : Promise<Lecturers> {
-        return await this.lecturerRepository.updateNipByEmail(payload.nip, request.user.email);
+        return await this.lecturerRepository.update(request.user.email, payload);
     }
 
     // prettier-ignore

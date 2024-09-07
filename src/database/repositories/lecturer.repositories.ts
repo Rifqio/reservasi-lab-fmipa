@@ -2,10 +2,46 @@ import { Injectable } from '@nestjs/common';
 import { Lecturers } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service.';
 import { LecturerProfile } from 'src/services/profile/dto/response/lecturer-profile.response';
+import { Repository } from './repositories.interface';
 
 @Injectable()
-export class LecturerRepositories {
+export class LecturerRepositories implements Repository<Lecturers, string> {
     constructor(private db: DatabaseService) {}
+
+    findById(id: string): Promise<{ user_email: string; nip: string; is_head_of_lab: boolean; }> {
+        throw new Error('Method not implemented.');
+    }
+
+    public async findAll(): Promise<Array<Lecturers>> {
+        return await this.db.lecturers.findMany();
+    }
+    
+    public async create(data: Lecturers): Promise<Lecturers> {
+        return await this.db.lecturers.create({
+            data: {
+                ...data
+            }
+        })
+    }
+
+    public async update(email: string, data: Partial<Lecturers>): Promise<Lecturers> {
+        return await this.db.lecturers.update({
+            where: {
+                user_email: email,
+            },
+            data: {
+                ...data,
+            },
+        })
+    }
+
+    async delete(email: string): Promise<void> {
+        await this.db.lecturers.delete({
+            where: {
+                user_email: email,
+            },
+        });
+    }
 
     public async findLecturerByEmail(email: string): Promise<Lecturers> {
         return await this.db.lecturers.findFirst({

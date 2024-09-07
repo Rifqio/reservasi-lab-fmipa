@@ -1,12 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { LabClearance } from '@prisma/client';
+import { isEmpty } from 'lodash';
+import { LabClearanceRepositories } from 'src/database/repositories/lab-clearance.repositories';
 import { LabReservationRepositories } from 'src/database/repositories/lab-reservation.repositories';
-import { LabReservationRequest, LabClearanceRequest, LabVerifyRequest } from './dto/request';
 import { BusinessException } from 'src/server/exception/business.exception';
 import { ApiRequest } from 'src/server/request/api.request';
 import { UserRole } from '../auth/dto/user-role.enum';
+import { LabClearanceRequest, LabReservationRequest, LabVerifyRequest } from './dto/request';
 import { CurrentLabReservationResponse } from './dto/response';
-import { LabClearanceRepositories } from 'src/database/repositories/lab-clearance.repositories';
-import { isEmpty } from 'lodash';
 
 @Injectable()
 export class LabService {
@@ -17,11 +18,7 @@ export class LabService {
     private logger = new Logger(LabService.name);
 
     public async reserveLab(payload: LabReservationRequest, nim: string): Promise<string> {
-        const existingReservation = await this.validateReservation(payload.labId, payload.startDate, payload.endDate);
-        if (existingReservation > 0) {
-            this.logger.error(`Lab id ${payload.labId} already reserved for the date ${payload.startDate} - ${payload.endDate}`);
-            throw BusinessException.labAlreadyReserved();
-        }
+        await this.validateReservation(payload.labId, payload.startDate, payload.endDate);
         const reservation = await this.labReservationRepository.createReservation(payload, nim);
         return reservation.id_reservation;
     }
@@ -42,8 +39,16 @@ export class LabService {
     }
 
     public async requestClearance(payload: LabClearanceRequest, nim: string): Promise<string> {
-        const clearance = await this.labClearanceRepository.requestClearance(payload, nim);
+        const clearance = await this.labClearanceRepository.create({
+            nim,
+            purpose: payload.purpose,
+        });
         return clearance.letter_number;
+    }
+
+    public async getRequestClearance(req: ApiRequest): Promise<Array<LabClearance>> {
+        const clearance = await this.labClearanceRepository.findByNim(req.user.nim);
+        return clearance;
     }
 
     protected async findByIdReservation(id: string): Promise<void> {
@@ -88,12 +93,14 @@ export class LabService {
         );
     }
 
-    private async validateReservation(labId: number, startDate: Date, endDate: Date): Promise<number> {
-        const reservations = await this.labReservationRepository.findReservationByLabIdAndDate(
-            labId,
-            startDate,
-            endDate,
-        );
-        return reservations.length;
+    private async validateReservation(labId: number, startDate: Date, endDate: Date): Promise<void> {
+        if (startDate > endDate) {
+            this.logger.error(`Start date ${startDate} is greater than end date ${endDate}`);
+            throw BusinessException.invalidLabReservationDate();
+        }
+        const reservations = await this.labReservationRepository.findReservationByLabIdAndDate(labId, startDate, endDate);
+        if (reservations.length > 0) {
+            throw BusinessException.labAlreadyReserved();
+        }
     }
 }

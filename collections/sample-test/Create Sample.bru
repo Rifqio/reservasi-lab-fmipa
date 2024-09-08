@@ -1,0 +1,23 @@
+meta {
+  name: Create Sample
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/v1/sample
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyYzc5NTYxNy1kNmNlLTRiMTQtODgwZi0yYjdmZGQ3YzE0MzciLCJlbWFpbCI6ImJhZ3VzLmhlcm1hd2FuQHN0dWRlbnQudW5zLmFjLmlkIiwicm9sZSI6IlNUVURFTlQiLCJuaW0iOiJVTlNFVC1HOXFDazRZUkwiLCJuaXAiOiItIiwiaWF0IjoxNzI0NTYyNzAxLCJleHAiOjE3MjQ2MDU5MDEsImF1ZCI6ImNsaWVudC5zaXJlbGEubWlwYS51bnMuYWMuaWQiLCJpc3MiOiJzaXJlbGEubWlwYS51bnMuYWMuaWQifQ.C8sT6a1Df9q65-R4f8s717mUzGw-LKC2SfrXX4ZI1IU
+}
+
+body:json {
+  {
+    "research_title": "Test",
+    "sample_name" : "test sample name",
+    "sample_quantity": 10
+  }
+}

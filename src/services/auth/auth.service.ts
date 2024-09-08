@@ -1,15 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { LoginRequestDTO, RegisterRequestDTO, TokenPayload, TokenDTO, UserRole, LoginResponse } from './dto';
-import { AuthException } from 'src/server/exception/auth.exception';
-import { AuthRepositories } from 'src/database/repositories/auth.repositories';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { StudentRepositories } from 'src/database/repositories/student.repositories';
-import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
 import { Users } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { Encryption } from 'src/commons/encryption';
 import { Utils } from 'src/commons/utils';
 import { Config } from 'src/config/config';
-import { Encryption } from 'src/commons/encryption';
+import { AuthRepositories } from 'src/database/repositories/auth.repositories';
+import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
+import { StudentRepositories } from 'src/database/repositories/student.repositories';
+import { AuthException } from 'src/server/exception/auth.exception';
+import { LoginRequestDTO, LoginResponse, RegisterRequestDTO, TokenPayload, UserRole } from './dto';
 
 @Injectable()
 export class AuthService {

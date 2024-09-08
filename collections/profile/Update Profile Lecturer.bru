@@ -1,0 +1,21 @@
+meta {
+  name: Update Profile Lecturer
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{base_url}}/v1/profile/lecturer
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZThiMmZkNC02NTg4LTRiNDctOTkxNy03MDMwMzA1NTc0ZTAiLCJlbWFpbCI6Im11bHlhd2FuLnNldGlhZGlAbWlwYS51bnMuYWMuaWQiLCJyb2xlIjoiTEVDVFVSRVIiLCJuaW0iOiItIiwibmlwIjoiVU5TRVQtVG9XUFEzRTE2IiwiaWF0IjoxNzI0Mzk0NDQ4LCJleHAiOjE3MjQ0ODA4NDgsImlzcyI6InNpcmVsYS5taXBhLnVucy5hYy5pZCJ9.EEVnE3Sd7fXC3eOMnA8bXxWX8R0f5RG2AE9Uk0ZLHN8
+}
+
+body:json {
+  {
+    "nip": "123091231239009123"
+  }
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Get List
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/v1/list?type=lab_tools&labName=Lab Biologi
+  body: none
+  auth: bearer
+}
+
+params:query {
+  type: lab_tools
+  labName: Lab Biologi
+}
+
+auth:bearer {
+  token: knce23x6Xaq23Fi6Iq/B6/f0WAK+Qu3zSRVA8BUUllsVS0H2eYm5hpfenjwJ/MsN3cWeFJamrxLx3OCL08xq8pIO/gT+d/Bt6Lp+fzN68iY599fXVv7cNINRsflHohYHdFOCZbO0XQo8pKuh7JcBeqhGOH723xNvBOlxTU75LfpIpy6UP7sKId/qnqYEh2e7g33ldAj7fcwb/4Zb7aVu8oRQRdFxSxmK5/UA8wjXpbTYt/3GnemECaFxmigFJ/Lq3ZSUvY5Dys0fU61NIII04DOI96BP4+PMAs/XXPj+jyyk6i/+nzFtgFvAum4/lHbLXSv5QeygnZLvHv26jHqGi08lmMHISsFUskobuoUnfWhK+a4ZlxHWiwlMlSdGvS4HQx8fh1bSWBppZfbHmnr/4cCiow0oSV5l9eA014SmHfXaUyyY7E4coiwLrvf+HMxWlzui16VEsR0Osnt2G62372NpGR9KqMai5W3gXTZxhqgG/FN7nWyIa0X8qrIykHaLu9JlvUQxgAMXrWYNMXAuwA==
+}

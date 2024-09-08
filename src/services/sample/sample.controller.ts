@@ -1,12 +1,25 @@
-import { Body, Controller, Get, Logger, Post, Request, UseGuards } from '@nestjs/common';
-import { SampleService } from './sample.service';
-import { CreateSampleRequest } from './dto/request';
-import { CreateSampleResponse } from './dto/response';
+import {
+    Body,
+    Controller,
+    Get,
+    Logger,
+    Post,
+    Request,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors,
+    UsePipes,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/commons/decorators';
+import { FileValidationPipe } from 'src/commons/file-validation';
+import { RoleGuard } from 'src/server/guard';
 import { ApiRequest } from 'src/server/request';
 import { SuccessResponse } from 'src/server/response';
-import { RoleGuard } from 'src/server/guard';
-import { Roles } from 'src/commons/decorators';
 import { UserRole } from '../auth/dto';
+import { CreateSampleRequest, PaymentSampleRequest } from './dto/request';
+import { CreateSampleResponse } from './dto/response';
+import { SampleService } from './sample.service';
 
 @Controller('api/v1/sample')
 @UseGuards(RoleGuard)
@@ -14,6 +27,7 @@ export class SampleController {
     private logger = new Logger(SampleController.name);
     constructor(private readonly sampleService: SampleService) {}
 
+    // prettier-ignore
     @Post()
     @Roles(UserRole.STUDENT)
     public async createTestSample(@Request() request: ApiRequest, @Body() payload: CreateSampleRequest) : Promise<SuccessResponse<CreateSampleResponse>> {
@@ -25,10 +39,18 @@ export class SampleController {
 
     @Post('payment')
     @Roles(UserRole.STUDENT)
-    public async payTestSample(@Request() request: ApiRequest) : Promise<SuccessResponse<void>> {
+    @UseInterceptors(FileInterceptor('file'))
+    @UsePipes(FileValidationPipe)
+    public async payTestSample(
+        @Request() request: ApiRequest,
+        @Body() payload: PaymentSampleRequest,
+        @UploadedFile() file: Express.Multer.File,
+    ) {
+        this.logger.debug(`File uploaded: ${file.originalname}`);
+        this.logger.debug(JSON.stringify(payload));
         const email = request.user.email;
         // await this.sampleService.payTestSample(email);
-        return SuccessResponse.success('Sample test has been paid');
+        // return SuccessResponse.success('Sample test has been paid');
     }
 
     @Get()

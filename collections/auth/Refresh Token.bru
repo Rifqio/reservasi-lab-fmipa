@@ -1,0 +1,17 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/v1/auth/refresh-token
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refresh_token" : "knce23x6Xaq23Fi6Iq/B6/f0WAK+Qu3zSRVA8BUUllsVS0H2eYm5hpfenjwJ/MsN3cWeFJamrxLx3OCL08xq8pIO/gT+d/Bt6Lp+fzN68iY599fXVv7cNINRsflHohYHdFOCZbO0XQo8pKuh7JcBeqhGOH723xNvBOlxTU75LfpIpy6UP7sKId/qnqYEh2e7g33ldAj7fcwb/4Zb7aVu8oRQRdFxSxmK5/UA8wjXpbSdSeQybVIxvxoRXGfNiIWhPrflALIu2tlBomKWVcd3sDSbQNsM72aHf0O7qugGy7/RpbcSD4fUMc8zp/uo8LTe6nl9xV0oRGYsri4hXR/ujVxpJR2oqn/kR3yNmRlUOA5KuKuYBiHVpLdqffe52mdtl1IkkSGuKrN1qz7ymh3fPRwfxWaySxoba3J5mti8yT/UjXY4FvF/uLxX9zz2TYHjCzE8SiKr9mb1eTF2Qz+UBTNRki4ydCg7KmHHDlTAt+8="
+  }
+}

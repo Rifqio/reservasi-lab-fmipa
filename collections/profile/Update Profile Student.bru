@@ -1,0 +1,24 @@
+meta {
+  name: Update Profile Student
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{base_url}}/v1/profile/student
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: knce23x6Xaq23Fi6Iq/B6/f0WAK+Qu3zSRVA8BUUllsVS0H2eYm5hpfenjwJ/MsN3cWeFJamrxLx3OCL08xq8pIO/gT+d/Bt6Lp+fzN68iY599fXVv7cNINRsflHohYHdFOCZbO0XQo8pKuh7JcBeqhGOH723xNvBOlxTU75LfpIpy6UP7sKId/qnqYEh2e7g33ldAj7fcwb/4Zb7aVu8oRQRdFxSxmK5/UA8wjXpbSkYKtjWmD4fzURWnYZME0l+TOOGgkWe1XKQi8xJLd8TNIlXwT8F8PqROE6rq/HkpQirqB3S7DIKXT6xv5hyu77qVvG9PBCcby2teuQn/CT44/6044cMHumeuXdkGXsKCLlFs0BBEyPhbJ1fgQxUOgvrdLUoUdMZvLwN6tkFMBEbcHq9Qj0ZWEHCvdZAtYJPf+gOyP4YVyMMAs5/LPk1ect4PwgE4am4eAaiomtHYnjmetNw9WOYI5HjOIWIUJRh/0B838oxWq/eEdGIpn3SJZ7kzWo57puZNONjYhAC01hJKN5RHMU+wTXx4NuKM8LCPM=
+}
+
+body:json {
+  {
+    "phone_number" : "082728192011",
+    "nim" : "V3420028",
+    "study_program": "S1 Farmasi",
+    "batch": 2020
+  }
+}

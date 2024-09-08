@@ -20,4 +20,8 @@ export class BusinessException extends HttpException {
     public static invalidLabReservationDate(): BusinessException {
         throw new BusinessException('Invalid lab reservation date', HttpStatus.BAD_REQUEST);
     }
+
+    public static missingPaymentFile (): BusinessException {
+        throw new BusinessException('Payment file is required', HttpStatus.BAD_REQUEST);
+    }
 }

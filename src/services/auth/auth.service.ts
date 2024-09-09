@@ -54,7 +54,7 @@ export class AuthService {
         const templatePath = path.join(__dirname, '../../../assets/emailVerification.ejs');
         const token = this.generateVerificationToken(email);
         const verifyLink = `${Config.APP_URL}/v1/auth/verify?token=${token}`;
-        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink });
+        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink, email });
 
         this.smtpService.sendMailHtml({
             to: email,

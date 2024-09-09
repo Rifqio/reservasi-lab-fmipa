@@ -18,6 +18,6 @@ export class ListController {
         }
 
         const list = await this.listService.getLists(type, labName);
-        return SuccessResponse.successWithData('List retrieved successfully', list);
+        return SuccessResponse.success('List retrieved successfully', list);
     }
 }

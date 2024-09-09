@@ -19,14 +19,14 @@ export class LabController {
     public async reserveLab(@Request() req: ApiRequest, @Body() body: LabReservationRequest): Promise<SuccessResponse<LabReservationResponse>> {
         const reservation = await this.labService.reserveLab(body, req.user.nim);
         const reservationId = new LabReservationResponse(reservation);
-        return SuccessResponse.successWithData('Lab reservation success', reservationId);
+        return SuccessResponse.success('Lab reservation success', reservationId);
     }
 
     @Get('reservation')
     @Roles(UserRole.STUDENT, UserRole.ADMIN)
     public async getCurrentReservation(@Request() req: ApiRequest): Promise<SuccessResponse<Array<CurrentLabReservationResponse>>> {
         const reservation = await this.labService.getCurrentReservation(req);
-        return SuccessResponse.successWithData('Current reservation fetched', reservation);
+        return SuccessResponse.success('Current reservation fetched', reservation);
     }
 
     @Post('clearance')
@@ -34,7 +34,7 @@ export class LabController {
     public async requestClearance(@Request() req: ApiRequest, @Body() payload: LabClearanceRequest): Promise<SuccessResponse<RequestClearanceResponse>> {
         const clearance = await this.labService.requestClearance(payload, req.user.nim);
         const response = new RequestClearanceResponse(clearance);
-        return SuccessResponse.successWithData('Clearance request success', response);
+        return SuccessResponse.success('Clearance request success', response);
     }
 
     @Get('clearance')
@@ -42,7 +42,7 @@ export class LabController {
     @Roles(UserRole.STUDENT)
     public async getRequestClearance(@Request() req: ApiRequest): Promise<SuccessResponse<Array<LabClearance>>> {
         const clearance = await this.labService.getRequestClearance(req);
-        return SuccessResponse.successWithData('Clearance request fetched', clearance);
+        return SuccessResponse.success('Clearance request fetched', clearance);
     }
 
     @Patch('reservation/verify/:id')

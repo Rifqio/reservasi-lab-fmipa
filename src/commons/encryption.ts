@@ -35,17 +35,11 @@ export class Encryption {
 
     public static decrypt(encryptedText: string): string {
         try {
-            console.log('Goes here');
-            console.log(encryptedText);
             const decipher = crypto.createDecipheriv(Encryption.algorithm, Encryption.key, Encryption.iv);
-            console.log('Goes here 2');
             let decrypted = decipher.update(encryptedText, 'base64', 'utf8');
-            console.log('Goes here 3');
-            console.log(decrypted);
             return (decrypted += decipher.final('utf8'));
         } catch (error) {
-            Logger.error(error);
-            // console.log(error);
+            Logger.error(`[Encryption] error: ${error}}`);
             throw BusinessException.invalidDecryptionToken();
         }
     }

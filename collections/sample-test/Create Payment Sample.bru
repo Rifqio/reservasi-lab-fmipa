@@ -1,0 +1,20 @@
+meta {
+  name: Create Payment Sample
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/v1/sample/payment
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: knce23x6Xaq23Fi6Iq/B6/f0WAK+Qu3zSRVA8BUUllsVS0H2eYm5hpfenjwJ/MsN3cWeFJamrxLx3OCL08xq8pIO/gT+d/Bt6Lp+fzN68iY599fXVv7cNINRsflHohYHdFOCZbO0XQo8pKuh7JcBeqhGOH723xNvBOlxTU75LfpIpy6UP7sKId/qnqYEh2e7g33ldAj7fcwb/4Zb7aVu8oRQRdFxSxmK5/UA8wjXpbTYt/3GnemECaFxmigFJ/Lq3ZSUvY5Dys0fU61NIII04DOI96BP4+PMAs/XXPj+jyyOhK97ceaQTqwJDg4zUyM08oOZD2xV4XBaVG67ocEdcFUYG47YNKZuGhW95Dvma2oLhVA0FiYGu9eb+cckOsz/rRmCW1Fvd3XoaOPdWtf47swxyEZ41yAnYyTLJYw8510HYSWJDiZPhCDh0IM9P7ayeM8lQHHOR+UmDv+Fz3E4yNz2RWj+A7cLXvbOmJ712iBNGMlCTbrFaImkWZgxOOGty3K6VosQ586ZWINKX8xPMQ==
+}
+
+body:multipart-form {
+  payment_code: Testsss
+  file: @file(C:\Users\oktar\OneDrive\Pictures\bagi-bagi-meme-jomok-kalian-dong-gan-v0-8r9kuf4enjgc1.jpeg)
+}

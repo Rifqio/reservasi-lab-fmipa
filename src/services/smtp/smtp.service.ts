@@ -24,7 +24,7 @@ export class SMTPService {
 
     public async sendMailHtml(data: MailOptions) {
         const mailOptions = {
-            from: data.from,
+            from: Config.SMTP_EMAIL_FROM,
             to: data.to,
             subject: data.subject,
             html: data.html,

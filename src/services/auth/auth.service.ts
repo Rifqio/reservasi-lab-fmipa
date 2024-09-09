@@ -2,21 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { add } from 'date-fns';
+import * as ejs from 'ejs';
+import * as path from 'path';
 import { Encryption } from 'src/commons/encryption';
 import { Utils } from 'src/commons/utils';
 import { Config } from 'src/config/config';
 import {
-    UserRepositories,
     AuthRepositories,
     LecturerRepositories,
     StudentRepositories,
+    UserRepositories,
 } from 'src/database/repositories';
 import { AuthException } from 'src/server/exception/auth.exception';
-import { LoginRequestDTO, LoginResponse, RegisterRequestDTO, TokenPayload, UserRole } from './dto';
 import { SMTPService } from '../smtp/smtp.service';
-import * as ejs from 'ejs';
-import * as path from 'path';
-import { add } from 'date-fns';
+import { LoginRequestDTO, LoginResponse, RegisterRequestDTO, TokenPayload, UserRole } from './dto';
 import { RegisterTokenPayload } from './dto/register-token-payload';
 
 @Injectable()
@@ -31,23 +31,6 @@ export class AuthService {
     ) {}
 
     private logger = new Logger(AuthService.name);
-
-    private async sendVerificationEmail(email: string): Promise<void> {
-        const templatePath = path.join(__dirname, '../../../assets/emailVerification.ejs');
-        const rawPayload = new RegisterTokenPayload(email, add(new Date(), { hours: 12 }));
-        console.log(rawPayload);
-        const payload = JSON.stringify(rawPayload);
-        console.log(payload);
-        console.log(Encryption.encrypt(payload));
-        const verifyLink = `${Config.APP_URL}/v1/auth/verify?token=${Encryption.encrypt(payload)}`;
-        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink });
-
-        this.smtpService.sendMailHtml({
-            to: email,
-            subject: 'Email Verification',
-            html,
-        });
-    }
 
     public async register(payload: RegisterRequestDTO): Promise<string> {
         const user = await this.findExistingUser(payload.email);
@@ -67,10 +50,28 @@ export class AuthService {
         return userId;
     }
 
+    private async sendVerificationEmail(email: string): Promise<void> {
+        const templatePath = path.join(__dirname, '../../../assets/emailVerification.ejs');
+        const token = this.generateVerificationToken(email);
+        const verifyLink = `${Config.APP_URL}/v1/auth/verify?token=${token}`;
+        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink });
+
+        this.smtpService.sendMailHtml({
+            to: email,
+            subject: 'Email Verification',
+            html,
+        });
+    }
+
+    private generateVerificationToken(email: string): string {
+        const payload = new RegisterTokenPayload(email, add(new Date(), { hours: 12 }));
+        const encryptedToken =  Encryption.encrypt(JSON.stringify(payload));
+        return encodeURIComponent(encryptedToken);
+    }
+
     public async verifyRegisterToken(token: string): Promise<void> {
-        //TODO: wrong final block length error, need to fix. Check token and encryption
-        console.log(token);
-        const payload = Encryption.decrypt(token);
+        const decodedToken = decodeURIComponent(token);
+        const payload = Encryption.decrypt(decodedToken);
         console.log('Goes here');
         // const payload = Encryption.decrypt(token);
         const { email, expired_at } = JSON.parse(payload) as RegisterTokenPayload;

@@ -1,0 +1,29 @@
+version: '3'
+services:
+  lab-server:
+    env_file: .env
+    # This is just a placeholder you should replace or use it directly from .env file
+    environment:
+      - APP_PORT=
+      - DATABASE_URL=
+      
+      - JWT_SECRET=
+      - JWT_EXPIRES_IN=
+      - JWT_REFRESH_EXPIRES_IN=
+      - JWT_ISSUER=
+      - JWT_AUDIENCE=
+      - JWT_REFRESH_SECRET=
+
+      - PRIVATE_IV=
+      - PRIVATE_SECRET=
+      - PRIVATE_ALGORITHM=
+
+      - SMTP_HOST=
+      - SMTP_PORT=
+      - SMTP_USER=
+      - SMTP_PASS=
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "80:4000"

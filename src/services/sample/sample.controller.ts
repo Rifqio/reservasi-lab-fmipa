@@ -8,7 +8,7 @@ import {
     UploadedFile,
     UseGuards,
     UseInterceptors,
-    UsePipes,
+    UsePipes
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/commons/decorators';
@@ -17,7 +17,7 @@ import { RoleGuard } from 'src/server/guard';
 import { ApiRequest } from 'src/server/request';
 import { SuccessResponse } from 'src/server/response';
 import { UserRole } from '../auth/dto';
-import { CreateSampleRequest, PaymentSampleRequest } from './dto/request';
+import { CreateSampleRequest } from './dto/request';
 import { CreateSampleResponse } from './dto/response';
 import { SampleService } from './sample.service';
 
@@ -39,16 +39,17 @@ export class SampleController {
 
     @Post('payment')
     @Roles(UserRole.STUDENT)
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('payment_file'))
     @UsePipes(FileValidationPipe)
     public async payTestSample(
         @Request() request: ApiRequest,
-        @Body() payload: PaymentSampleRequest,
+        // @Body() payload: PaymentSampleRequest,  
         @UploadedFile() file: Express.Multer.File,
     ) {
         this.logger.debug(`File uploaded: ${file.originalname}`);
-        this.logger.debug(JSON.stringify(payload));
-        const email = request.user.email;
+        // this.logger.debug(JSON.stringify(payload));
+        // const email = request.user.email;
+        return file;
         // await this.sampleService.payTestSample(email);
         // return SuccessResponse.success('Sample test has been paid');
     }

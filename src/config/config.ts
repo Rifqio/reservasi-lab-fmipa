@@ -4,6 +4,7 @@
 export class Config {
     public static readonly APP_PORT = process.env.APP_PORT;
     public static readonly APP_URL = process.env.APP_URL;
+    public static readonly SMTP_EMAIL_FROM = process.env.SMTP_EMAIL_FROM;
     public static readonly JWT_SECRET = process.env.JWT_SECRET;
     public static readonly JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
     public static readonly JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN;

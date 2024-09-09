@@ -11,8 +11,4 @@ export class SuccessResponse<T> extends ApiResponse {
     public static success<T>(message: string, data?: T) {
         return new SuccessResponse(message, data);
     }
-
-    public static successWithData<T>(message: string, data: T) {
-        return new SuccessResponse(message, data);
-    }
 }

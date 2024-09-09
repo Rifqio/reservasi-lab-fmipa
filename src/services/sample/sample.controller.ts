@@ -34,7 +34,7 @@ export class SampleController {
         const email = request.user.email;
         const sample = await this.sampleService.createTestSample(email, payload);
         this.logger.log(`Sample test has been created with invoice number: ${sample.invoiceNumber} and letter number: ${sample.letterNumber}`);
-        return SuccessResponse.successWithData('Sample test has been created', sample);
+        return SuccessResponse.success('Sample test has been created', sample);
     }
 
     @Post('payment')

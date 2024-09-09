@@ -72,8 +72,6 @@ export class AuthService {
     public async verifyRegisterToken(token: string): Promise<void> {
         const decodedToken = decodeURIComponent(token);
         const payload = Encryption.decrypt(decodedToken);
-        console.log('Goes here');
-        // const payload = Encryption.decrypt(token);
         const { email, expired_at } = JSON.parse(payload) as RegisterTokenPayload;
 
         if (new Date() > new Date(expired_at)) throw AuthException.tokenExpired();

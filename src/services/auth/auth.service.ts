@@ -5,22 +5,49 @@ import * as bcrypt from 'bcrypt';
 import { Encryption } from 'src/commons/encryption';
 import { Utils } from 'src/commons/utils';
 import { Config } from 'src/config/config';
-import { AuthRepositories } from 'src/database/repositories/auth.repositories';
-import { LecturerRepositories } from 'src/database/repositories/lecturer.repositories';
-import { StudentRepositories } from 'src/database/repositories/student.repositories';
+import {
+    UserRepositories,
+    AuthRepositories,
+    LecturerRepositories,
+    StudentRepositories,
+} from 'src/database/repositories';
 import { AuthException } from 'src/server/exception/auth.exception';
 import { LoginRequestDTO, LoginResponse, RegisterRequestDTO, TokenPayload, UserRole } from './dto';
+import { SMTPService } from '../smtp/smtp.service';
+import * as ejs from 'ejs';
+import * as path from 'path';
+import { add } from 'date-fns';
+import { RegisterTokenPayload } from './dto/register-token-payload';
 
 @Injectable()
 export class AuthService {
     constructor(
         private jwtService: JwtService,
         private authRepository: AuthRepositories,
+        private userRepository: UserRepositories,
         private studentRepository: StudentRepositories,
         private lecturerRepository: LecturerRepositories,
+        private smtpService: SMTPService,
     ) {}
 
     private logger = new Logger(AuthService.name);
+
+    private async sendVerificationEmail(email: string): Promise<void> {
+        const templatePath = path.join(__dirname, '../../../assets/emailVerification.ejs');
+        const rawPayload = new RegisterTokenPayload(email, add(new Date(), { hours: 12 }));
+        console.log(rawPayload);
+        const payload = JSON.stringify(rawPayload);
+        console.log(payload);
+        console.log(Encryption.encrypt(payload));
+        const verifyLink = `${Config.APP_URL}/v1/auth/verify?token=${Encryption.encrypt(payload)}`;
+        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink });
+
+        this.smtpService.sendMailHtml({
+            to: email,
+            subject: 'Email Verification',
+            html,
+        });
+    }
 
     public async register(payload: RegisterRequestDTO): Promise<string> {
         const user = await this.findExistingUser(payload.email);
@@ -35,7 +62,25 @@ export class AuthService {
             userId = await this.authRepository.createUserLecturer(payload, UserRole.LECTURER);
         }
 
+        await this.sendVerificationEmail(payload.email);
+
         return userId;
+    }
+
+    public async verifyRegisterToken(token: string): Promise<void> {
+        //TODO: wrong final block length error, need to fix. Check token and encryption
+        console.log(token);
+        const payload = Encryption.decrypt(token);
+        console.log('Goes here');
+        // const payload = Encryption.decrypt(token);
+        const { email, expired_at } = JSON.parse(payload) as RegisterTokenPayload;
+
+        if (new Date() > new Date(expired_at)) throw AuthException.tokenExpired();
+
+        const user = await this.userRepository.findUserByEmail(email);
+        if (!user) throw AuthException.userNotFound();
+
+        await this.userRepository.updateVerificationEmail(email, true);
     }
 
     public async login(payload: LoginRequestDTO): Promise<LoginResponse> {
@@ -76,7 +121,7 @@ export class AuthService {
                 secret: Config.JWT_REFRESH_SECRET,
                 issuer: Config.JWT_ISSUER,
                 audience: Config.JWT_AUDIENCE,
-            });            
+            });
         } catch (error) {
             this.logger.error(error);
             throw AuthException.unauthorized();

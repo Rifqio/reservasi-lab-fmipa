@@ -31,4 +31,15 @@ export class UserRepositories {
             },
         });
     }
+
+    public async updateVerificationEmail(email: string, isEmailVerified: boolean) {
+        return await this.db.users.update({
+            where: {
+                email,
+            },
+            data: {
+                is_email_verified: isEmailVerified,
+            },
+        });
+    }
 }

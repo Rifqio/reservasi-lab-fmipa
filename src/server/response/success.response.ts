@@ -8,8 +8,8 @@ export class SuccessResponse<T> extends ApiResponse {
         this.data = data;
     }
 
-    public static success(message: string) {
-        return new SuccessResponse(message, null);
+    public static success<T>(message: string, data?: T) {
+        return new SuccessResponse(message, data);
     }
 
     public static successWithData<T>(message: string, data: T) {

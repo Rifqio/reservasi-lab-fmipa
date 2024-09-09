@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import { Config } from 'src/config/config';
 
 @Injectable()
 export class SMTPService {
     private logger = new Logger(SMTPService.name);
-    private transporter: Transporter;
+    private transporter: nodemailer.Transporter;
 
     constructor() {
         this.logger.log('SMTP Service Initialized');
@@ -29,8 +29,8 @@ export class SMTPService {
             subject: data.subject,
             html: data.html,
         };
-    
-        this.transporter.sendMail(mailOptions, (error, info: SentMessageInfo) => {
+
+        this.transporter.sendMail(mailOptions, (error, info: nodemailer.SentMessageInfo) => {
             if (error) {
                 this.logger.error(`Error sending email: ${error.message} | stack: ${error.stack}`);
             } else {

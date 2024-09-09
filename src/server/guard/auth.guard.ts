@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate {
 
             const profileUrl = request.originalUrl.startsWith('/api/v1/profile');
             const listUrl = request.originalUrl.startsWith('/api/v1/list');
-            if(!profileUrl && !listUrl) {
+            if (!profileUrl && !listUrl) {
                 const isUserStudent = payload.role === UserRole.STUDENT;
                 const isUserLecturer = payload.role === UserRole.LECTURER;
                 if (isUserStudent || isUserLecturer) {

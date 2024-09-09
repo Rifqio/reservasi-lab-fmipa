@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 
 export class BusinessException extends HttpException {
     constructor(message: string, statusCode: number) {
@@ -21,7 +21,11 @@ export class BusinessException extends HttpException {
         throw new BusinessException('Invalid lab reservation date', HttpStatus.BAD_REQUEST);
     }
 
-    public static missingPaymentFile (): BusinessException {
+    public static missingPaymentFile(): BusinessException {
         throw new BusinessException('Payment file is required', HttpStatus.BAD_REQUEST);
+    }
+
+    public static invalidDecryptionToken(): BusinessException {
+        throw new BusinessException('Invalid decryption token', HttpStatus.BAD_REQUEST);
     }
 }

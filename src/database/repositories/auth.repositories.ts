@@ -11,6 +11,7 @@ import { UserRole } from 'src/services/auth/dto/user-role.enum';
 export class AuthRepositories {
     constructor(private readonly db: DatabaseService) {}
 
+    // prettier-ignore
     public async createUserStudent(payload: RegisterRequestDTO, role: UserRole.STUDENT): Promise<string> {
         const mockStudent = MockHelper.mockStudentProfile();
         return this.createUser(
@@ -27,6 +28,7 @@ export class AuthRepositories {
         );
     }
 
+    // prettier-ignore
     public async createUserLecturer(payload: RegisterRequestDTO, role: UserRole.LECTURER): Promise<string> {
         const mockLecturer = MockHelper.mockLecturerProfile();
         return this.createUser(
@@ -41,13 +43,14 @@ export class AuthRepositories {
         );
     }
 
+    // prettier-ignore
     private async createUser(payload: RegisterRequestDTO, role: UserRole, additionalDataCreation: PrismaPromise<any>): Promise<string> {
         const userCreation = this.db.users.create({
             data: {
                 id_user: faker.string.uuid(),
                 email: payload.email,
                 full_name: payload.fullName,
-                is_email_verified: true, // For the sake of testing, we assume that the email is always verified
+                is_email_verified: false, // For the sake of testing, we assume that the email is always verified
                 password: payload.password,
                 role: role,
                 created_at: new Date(),

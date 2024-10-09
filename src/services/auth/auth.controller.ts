@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { LoginRequestDTO, RefreshTokenRequestDTO, RegisterRequestDTO } from './dto';
 import { LoginResponse, RegisterResponse } from './dto/response';
 
-@Controller('api/v1/auth')
+@Controller('v1/auth')
 @Public()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}

@@ -1,9 +1,9 @@
 import { Controller, Post } from '@nestjs/common';
-import { SeedService } from './seed.service';
 import { Public } from 'src/commons/decorators';
 import { SuccessResponse } from 'src/server/response';
+import { SeedService } from './seed.service';
 
-@Controller('api/v1/seed')
+@Controller('v1/seed')
 @Public()
 export class SeedController {
     constructor(private readonly seedService: SeedService) {}

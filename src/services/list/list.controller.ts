@@ -5,7 +5,7 @@ import { ListRequestType } from './dto/request';
 import { ListResponse } from './dto/response';
 import { ListService } from './list.service';
 
-@Controller('api/v1/list')
+@Controller('v1/list')
 export class ListController {
     constructor(private readonly listService: ListService) {}
     private readonly logger = new Logger(ListController.name);

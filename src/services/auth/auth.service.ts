@@ -17,6 +17,7 @@ import {
 import { AuthException } from 'src/server/exception/auth.exception';
 import { SMTPService } from '../smtp/smtp.service';
 import { LoginRequestDTO, LoginResponse, RegisterRequestDTO, TokenPayload, UserRole } from './dto';
+import { RefreshTokenDTO } from './dto/refresh-token.dto';
 import { RegisterTokenPayload } from './dto/register-token-payload';
 
 @Injectable()
@@ -48,25 +49,6 @@ export class AuthService {
         await this.sendVerificationEmail(payload.email);
 
         return userId;
-    }
-
-    private async sendVerificationEmail(email: string): Promise<void> {
-        const templatePath = path.join(__dirname, '../../../assets/emailVerification.ejs');
-        const token = this.generateVerificationToken(email);
-        const verifyLink = `${Config.APP_URL}/v1/auth/verify?token=${token}`;
-        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink, email });
-
-        this.smtpService.sendMailHtml({
-            to: email,
-            subject: 'Email Verification',
-            html,
-        });
-    }
-
-    private generateVerificationToken(email: string): string {
-        const payload = new RegisterTokenPayload(email, add(new Date(), { hours: 12 }));
-        const encryptedToken =  Encryption.encrypt(JSON.stringify(payload));
-        return encodeURIComponent(encryptedToken);
     }
 
     public async verifyRegisterToken(token: string): Promise<void> {
@@ -113,14 +95,31 @@ export class AuthService {
         }
     }
 
-    private verifyRefreshToken(refreshToken: string): TokenPayload {
+    private async sendVerificationEmail(email: string): Promise<void> {
+        const templatePath = path.join(__dirname, '../../../assets/emailVerification.ejs');
+        const token = this.generateVerificationToken(email);
+        const verifyLink = `${Config.APP_URL}/v1/auth/verify?token=${token}`;
+        const html = await ejs.renderFile(templatePath, { activationCode: verifyLink, email });
+
+        this.smtpService.sendMailHtml({
+            to: email,
+            subject: 'Email Verification',
+            html,
+        });
+    }
+
+    private generateVerificationToken(email: string): string {
+        const payload = new RegisterTokenPayload(email, add(new Date(), { hours: 12 }));
+        const encryptedToken =  Encryption.encrypt(JSON.stringify(payload));
+        return encodeURIComponent(encryptedToken);
+    }
+
+    private verifyRefreshToken(refreshToken: string): { email: string } {
         try {
-            const decryptedRefreshToken = Encryption.decrypt(refreshToken);
-            return this.jwtService.verify(decryptedRefreshToken, {
-                secret: Config.JWT_REFRESH_SECRET,
-                issuer: Config.JWT_ISSUER,
-                audience: Config.JWT_AUDIENCE,
-            });
+            const decryptedToken = Encryption.decrypt(refreshToken);
+            const token: RefreshTokenDTO = JSON.parse(decryptedToken);
+            if (token.expiredAt < new Date()) throw AuthException.tokenExpired();
+            return { email: token.email };
         } catch (error) {
             this.logger.error(error);
             throw AuthException.unauthorized();
@@ -133,39 +132,25 @@ export class AuthService {
 
     private generateToken(user: Users, identity: string, role: UserRole): LoginResponse {
         const accessToken = this.generateAccessToken(user, identity, role);
-        const refreshToken = this.generateRefreshToken(user);
-
-        const encryptedAccessToken = Encryption.encrypt(accessToken);
-        const encryptedRefreshToken = Encryption.encrypt(refreshToken);
-        return new LoginResponse(encryptedAccessToken, encryptedRefreshToken, role);
+        const refreshToken = this.generateRefreshToken(user.email);
+        return new LoginResponse(accessToken, refreshToken, role);
     }
 
-    private generateRefreshToken(user: Users): string {
-        const payload = this.generateRefreshTokenPayload(user);
-        return this.jwtService.sign(payload, {
-            expiresIn: Config.JWT_REFRESH_EXPIRES_IN,
-            issuer: Config.JWT_ISSUER,
-            audience: Config.JWT_AUDIENCE,
-            secret: Config.JWT_REFRESH_SECRET,
-        });
+    private generateRefreshToken(email: string): string {
+        const expiration = add(new Date(), { days: 7 });
+        const payload = new RefreshTokenDTO(email, expiration);
+        return Encryption.encrypt(JSON.stringify(payload));
     }
 
     private generateAccessToken(user: Users, identity: string, role: UserRole): string {
         const payload = this.generateAccessTokenPayload(user, identity, role);
-        return this.jwtService.sign(payload, {
+        const accessToken = this.jwtService.sign(payload, {
             expiresIn: Config.JWT_EXPIRES_IN,
             issuer: Config.JWT_ISSUER,
             audience: Config.JWT_AUDIENCE,
             secret: Config.JWT_SECRET,
         });
-    }
-
-    private generateRefreshTokenPayload(user: Users): TokenPayload {
-        return {
-            sub: user.id_user,
-            email: user.email,
-            role: user.role as UserRole,
-        };
+        return Encryption.encrypt(accessToken);
     }
 
     private generateAccessTokenPayload(user: Users, identity: string, role: UserRole): TokenPayload {

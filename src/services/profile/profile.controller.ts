@@ -10,7 +10,7 @@ import { LecturerProfile } from './dto/response/lecturer-profile.response';
 import { StudentProfile } from './dto/response/student-profile.response';
 import { ProfileService } from './profile.service';
 
-@Controller('api/v1/profile')
+@Controller('v1/profile')
 @UseGuards(RoleGuard)
 export class ProfileController {
     constructor(private readonly profileService: ProfileService) {}

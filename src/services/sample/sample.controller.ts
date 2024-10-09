@@ -21,7 +21,7 @@ import { CreateSampleRequest } from './dto/request';
 import { CreateSampleResponse } from './dto/response';
 import { SampleService } from './sample.service';
 
-@Controller('api/v1/sample')
+@Controller('v1/sample')
 @UseGuards(RoleGuard)
 export class SampleController {
     private logger = new Logger(SampleController.name);

@@ -24,6 +24,15 @@ export class LecturerRepositories implements Repository<Lecturers, string> {
         })
     }
 
+    public async findHeadOfLabByNip(nip: string): Promise<Lecturers> {
+        return await this.db.lecturers.findFirst({
+            where: {
+                nip: nip,
+                is_head_of_lab: true,
+            },
+        });
+    }
+
     public async update(email: string, data: Partial<Lecturers>): Promise<Lecturers> {
         return await this.db.lecturers.update({
             where: {

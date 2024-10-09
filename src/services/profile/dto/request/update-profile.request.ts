@@ -23,4 +23,6 @@ export class UpdateStudentProfileRequest {
 export class UpdateLecturerProfileRequest {
     @IsNotEmpty()
     public nip: string;
+
+    public isHeadOfLab?: boolean;
 }

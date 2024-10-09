@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { LabClearance } from '@prisma/client';
 import { isEmpty } from 'lodash';
+import { LecturerRepositories } from 'src/database/repositories';
 import { LabClearanceRepositories } from 'src/database/repositories/lab-clearance.repositories';
 import { LabReservationRepositories } from 'src/database/repositories/lab-reservation.repositories';
 import { BusinessException } from 'src/server/exception/business.exception';
 import { ApiRequest } from 'src/server/request/api.request';
 import { UserRole } from '../auth/dto/user-role.enum';
+import { LabClearanceStatus } from './dto/lab-clearance-status.enum';
 import { LabClearanceRequest, LabReservationRequest, LabVerifyRequest } from './dto/request';
 import { CurrentLabReservationResponse } from './dto/response';
 
@@ -14,6 +16,7 @@ export class LabService {
     constructor(
         private labReservationRepository: LabReservationRepositories,
         private labClearanceRepository: LabClearanceRepositories,
+        private lecturerRepository: LecturerRepositories,
     ) {}
     private logger = new Logger(LabService.name);
 
@@ -38,12 +41,50 @@ export class LabService {
         await this.labReservationRepository.updateStatusReservation(id, payload.status);
     }
 
+    public async verifyLabClearance(payload: LabVerifyRequest, req: ApiRequest, id: string): Promise<void> {
+        const role = req.user.role;
+        const status = payload.status;
+        
+        if (status != 'APPROVED') {
+            await this.labClearanceRepository.update(id, { status: LabClearanceStatus.DITOLAK });
+            return;
+        }
+
+        if (role === UserRole.LECTURER) {
+            await this.verifyLabClearanceByLecturer(req.user.nip, id);
+        } else {
+            await this.verifyLabClearanceByAdmin(id);
+        }
+    }
+
     public async requestClearance(payload: LabClearanceRequest, nim: string): Promise<string> {
         const clearance = await this.labClearanceRepository.create({
             nim,
             purpose: payload.purpose,
         });
         return clearance.letter_number;
+    }
+
+    private async verifyLabClearanceByAdmin(id: string): Promise<void> {
+        await this.labClearanceRepository.update(id, { status: LabClearanceStatus.TERVERIFIKASI_PETUGAS });
+    }
+
+    private async verifyLabClearanceByLecturer(nip: string, id: string): Promise<void> {
+        const isHeadOfLab = await this.isHeadOfLab(nip);
+        const updatedStatus = this.getUpdatedClearanceStatus(isHeadOfLab);
+        await this.labClearanceRepository.update(id, { status: updatedStatus });
+    }
+
+    private getUpdatedClearanceStatus(isHeadOfLab: boolean): LabClearanceStatus {
+        if (isHeadOfLab) {
+            return LabClearanceStatus.TERVERIFIKASI_KEPALA_LAB;
+        }
+        return LabClearanceStatus.TERVERIFIKASI_DOSEN;
+    }
+
+    private async isHeadOfLab(nip: string): Promise<boolean> {
+        const lab = await this.lecturerRepository.findHeadOfLabByNip(nip);
+        return !isEmpty(lab);
     }
 
     public async getRequestClearance(req: ApiRequest): Promise<Array<LabClearance>> {

@@ -9,7 +9,7 @@ import { LabClearanceRequest, LabReservationRequest, LabVerifyRequest } from './
 import { CurrentLabReservationResponse, LabReservationResponse, RequestClearanceResponse } from './dto/response';
 import { LabService } from './lab.service';
 
-@Controller('api/v1/lab')
+@Controller('v1/lab')
 @UseGuards(RoleGuard)
 export class LabController {
     constructor(private readonly labService: LabService) {}
@@ -43,6 +43,13 @@ export class LabController {
     public async getRequestClearance(@Request() req: ApiRequest): Promise<SuccessResponse<Array<LabClearance>>> {
         const clearance = await this.labService.getRequestClearance(req);
         return SuccessResponse.success('Clearance request fetched', clearance);
+    }
+
+    @Patch('clearance/verify/:id')
+    @Roles(UserRole.ADMIN, UserRole.LECTURER)
+    public async verifyLabClearance(@Request() req: ApiRequest, @Body() payload: LabVerifyRequest, @Param() id: string) {
+        await this.labService.verifyLabClearance(payload, req, id);
+        return SuccessResponse.success('Lab clearance status has been updated');
     }
 
     @Patch('reservation/verify/:id')
